@@ -1,15 +1,291 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── ENUMS ───
+enum ProductStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ProductCondition {
+  NEW
+  USED
+  REFURBISHED
+}
+
+enum OrderStatus {
+  PENDING
+  AWAITING_PAYMENT
+  PAYMENT_REPORTED
+  PAYMENT_VERIFIED
+  CONFIRMED
+  PROCESSING
+  DISPATCHED
+  DELIVERED
+  CANCELLED
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+  SCHEDULED
+}
+
+// ─── AUTH ───
+model Admin {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  name           String?
+  hashedPassword String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// ─── CATEGORIES ───
+model Category {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  slug        String     @unique
+  description String?
+  image       String?
+  icon        String?
+  sortOrder   Int        @default(0)
+  isActive    Boolean    @default(true)
+  isFeatured  Boolean    @default(false)
+  parentId    String?
+  parent      Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryTree")
+  products    Product[]
+  // Category-specific field definitions stored as JSON
+  specFields  Json?      // defines which spec fields this category uses
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([slug])
+  @@index([sortOrder])
+}
+
+// ─── BRANDS ───
+model Brand {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  slug      String    @unique
+  logo      String?
+  isActive  Boolean   @default(true)
+  sortOrder Int       @default(0)
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([slug])
+}
+
+// ─── PRODUCTS ───
+model Product {
+  id                String           @id @default(cuid())
+  // Basic info
+  title             String
+  slug              String           @unique
+  sku               String?          @unique
+  categoryId        String
+  category          Category         @relation(fields: [categoryId], references: [id])
+  brandId           String?
+  brand             Brand?           @relation(fields: [brandId], references: [id])
+  // Pricing
+  basePrice         Float
+  originalPrice     Float?           // crossed-out comparison price
+  // Status
+  status            ProductStatus    @default(DRAFT)
+  condition         ProductCondition @default(NEW)
+  stock             Int              @default(0)
+  lowStockThreshold Int              @default(3)
+  // Flags
+  isFeatured        Boolean          @default(false)
+  isOnSale          Boolean          @default(false)
+  // Content
+  shortDescription  String?
+  description       String?          // auto-generated or manually edited
+  descriptionEdited Boolean          @default(false)
+  // Specifications stored as structured JSON
+  specifications    Json?
+  // Features (touchscreen, fingerprint, backlit keyboard, etc.)
+  features          Json?
+  // Color
+  colors            String[]         @default([])
+  // Charger & Bag config
+  hasChargerOption  Boolean          @default(false)
+  chargerDeduction  Float            @default(3000) // Rs 3,000 default
+  hasBagOption      Boolean          @default(false)
+  bagPrice          Float            @default(0)
+  // Warranty
+  warrantyInfo      String?
+  // SEO
+  metaTitle         String?
+  metaDescription   String?
+  // Relations
+  images            ProductImage[]
+  variants          ProductVariant[]
+  orderItems        OrderItem[]
+  discounts         Discount[]
+
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  @@index([slug])
+  @@index([categoryId])
+  @@index([brandId])
+  @@index([status])
+  @@index([basePrice])
+  @@index([isFeatured])
+  @@index([isOnSale])
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String?
+  sortOrder Int     @default(0)
+  isMain    Boolean @default(false)
+
+  @@index([productId])
+}
+
+// Variants for RAM upgrades, SSD upgrades, etc.
+model ProductVariant {
+  id              String  @id @default(cuid())
+  productId       String
+  product         Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variantType     String  // "ram", "ssd", "color", etc.
+  label           String  // "16 GB DDR4", "512 GB NVMe SSD"
+  priceAdjustment Float   @default(0)
+  stock           Int?    // variant-level stock if needed
+  isDefault       Boolean @default(false)
+  sortOrder       Int     @default(0)
+
+  @@index([productId])
+  @@index([variantType])
+}
+
+// ─── ORDERS ───
+model Order {
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique // e.g., "LC-20261023-ABCD"
+  // Customer info
+  customerName    String
+  customerPhone   String
+  customerCity    String
+  customerAddress String
+  deliveryNotes   String?
+  // Pricing
+  subtotal        Float
+  deliveryCharge  Float       @default(0)
+  discount        Float       @default(0)
+  totalAmount     Float
+  // Status
+  status          OrderStatus @default(PENDING)
+  paymentVerified Boolean     @default(false)
+  paymentNote     String?
+  adminNotes      String?
+  // Items
+  items           OrderItem[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([orderNumber])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id             String  @id @default(cuid())
+  orderId        String
+  order          Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId      String
+  product        Product @relation(fields: [productId], references: [id])
+  productTitle   String  // snapshot at time of order
+  quantity       Int
+  unitPrice      Float
+  lineTotal      Float
+  // Selected configuration snapshot
+  selectedConfig Json    // { ram: "16GB", ssd: "512GB", charger: true, bag: false, color: "Silver" }
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+// ─── DISCOUNTS ───
+model Discount {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  type        String    @default("percentage") // "percentage" or "fixed"
+  value       Float     // percentage (e.g. 10) or fixed PKR amount
+  productId   String?
+  product     Product?  @relation(fields: [productId], references: [id])
+  categoryId  String?
+  isActive    Boolean   @default(true)
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([isActive])
+  @@index([startDate, endDate])
+}
+
+// ─── BLOG ───
+model BlogPost {
+  id              String     @id @default(cuid())
+  title           String
+  slug            String     @unique
+  excerpt         String?
+  content         String
+  featuredImage   String?
+  category        String?
+  tags            String[]   @default([])
+  status          BlogStatus @default(DRAFT)
+  publishedAt     DateTime?
+  metaTitle       String?
+  metaDescription String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  @@index([slug])
+  @@index([status])
+  @@index([publishedAt])
+}
+
+// ─── BRANCHES ───
+model Branch {
+  id             String   @id @default(cuid())
+  name           String
+  city           String
+  address        String?
+  mapLink        String?
+  contactNumber  String?
+  operatingHours String?
+  isActive       Boolean  @default(true)
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// ─── SITE SETTINGS ───
+model SiteSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+  type  String @default("text") // text, textarea, number, boolean, json, image
+
+  @@index([key])
 }
