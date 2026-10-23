@@ -28,9 +28,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       secondary:
         'bg-brand-slate text-white hover:bg-brand-steel focus:ring-brand-slate',
       outline:
-        'border border-brand-steel text-brand-navy hover:bg-surface-light dark:text-white dark:hover:bg-brand-slate focus:ring-accent-blue',
+        'border border-gray-300 bg-white text-gray-900 hover:bg-gray-100 hover:text-black focus:ring-accent-blue shadow-sm',
       ghost:
-        'text-brand-slate hover:bg-surface-light dark:text-accent-silver dark:hover:bg-brand-charcoal focus:ring-accent-blue',
+        'text-gray-700 hover:bg-gray-100 hover:text-black focus:ring-accent-blue',
       danger:
         'bg-status-error text-white hover:bg-red-600 focus:ring-status-error shadow-sm',
     };

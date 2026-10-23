@@ -254,9 +254,12 @@ export const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
               />
             </div>
           </div>
-          <Button type="submit" variant="outline" size="sm" className="w-full text-xs py-1.5">
-            Apply Price Filter
-          </Button>
+          <button
+            type="submit"
+            className="w-full py-2.5 px-3 rounded-xl bg-accent-blue hover:bg-accent-blue-dark !text-white font-bold text-xs shadow-md shadow-accent-blue/25 transition-all active:scale-[0.98] flex items-center justify-center gap-1.5"
+          >
+            <span>Apply Price Filter</span>
+          </button>
         </form>
       </div>
 
@@ -519,22 +522,20 @@ export const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
 
               {/* Bottom Drawer Actions */}
               <div className="pt-4 border-t border-gray-200 flex items-center gap-3">
-                <Button
-                  variant="outline"
-                  size="md"
-                  className="flex-1"
+                <button
+                  type="button"
+                  className="flex-1 py-2.5 px-3 rounded-xl border border-gray-300 bg-white hover:bg-gray-100 !text-gray-900 font-bold text-xs transition-colors shadow-sm"
                   onClick={handleClearAll}
                 >
                   Reset
-                </Button>
-                <Button
-                  variant="primary"
-                  size="md"
-                  className="flex-1"
+                </button>
+                <button
+                  type="button"
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-accent-blue hover:bg-accent-blue-dark !text-white font-bold text-xs shadow-md transition-colors"
                   onClick={() => setMobileDrawerOpen(false)}
                 >
                   Apply Filters
-                </Button>
+                </button>
               </div>
             </div>
           </div>

@@ -5,6 +5,7 @@ import prisma from '@/lib/prisma';
 import ProductDetailClient from '@/components/product/ProductDetailClient';
 import ProductCard from '@/components/product/ProductCard';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import { INITIAL_PRODUCTS } from '@/data/catalog';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,26 +20,42 @@ export async function generateMetadata({
       include: { brand: true, category: true, images: { take: 1 } },
     });
 
-    if (!product) return { title: 'Product Not Found' };
+    if (product) {
+      const title = product.metaTitle || `${product.title} — Laptop Collection Pakistan`;
+      const description =
+        product.metaDescription ||
+        product.shortDescription ||
+        `Buy ${product.title} in Pakistan at Laptop Collection. Fast delivery and checking warranty.`;
 
-    const title = product.metaTitle || `${product.title} — Laptop Collection Pakistan`;
-    const description =
-      product.metaDescription ||
-      product.shortDescription ||
-      `Buy ${product.title} in Pakistan at Laptop Collection. Fast delivery and checking warranty.`;
-
-    return {
-      title,
-      description,
-      openGraph: {
+      return {
         title,
         description,
-        images: product.images[0] ? [{ url: product.images[0].url }] : [],
+        openGraph: {
+          title,
+          description,
+          images: product.images[0] ? [{ url: product.images[0].url }] : [],
+        },
+      };
+    }
+  } catch (err) {
+    // DB offline, fall through to fallback
+  }
+
+  // Fallback to in-memory catalog
+  const sample = INITIAL_PRODUCTS.find((p) => p.slug === params.slug);
+  if (sample) {
+    return {
+      title: `${sample.title} — Laptop Collection Pakistan`,
+      description: sample.shortDescription || `Buy ${sample.title} with warranty across Pakistan.`,
+      openGraph: {
+        title: sample.title,
+        description: sample.shortDescription || '',
+        images: sample.images[0] ? [{ url: sample.images[0].url }] : [],
       },
     };
-  } catch (err) {
-    return { title: 'Laptop Collection Pakistan' };
   }
+
+  return { title: 'Product Not Found — Laptop Collection' };
 }
 
 export default async function ProductDetailPage({
@@ -46,42 +63,111 @@ export default async function ProductDetailPage({
 }: {
   params: { slug: string };
 }) {
-  const [product, whatsappSetting] = await Promise.all([
-    prisma.product.findUnique({
-      where: { slug: params.slug },
-      include: {
-        category: true,
-        brand: true,
-        images: { orderBy: { sortOrder: 'asc' } },
-        variants: { orderBy: { sortOrder: 'asc' } },
-        reviews: {
-          where: { isApproved: true },
-          orderBy: { createdAt: 'desc' },
-        },
-      },
-    }),
-    prisma.siteSetting.findUnique({ where: { key: 'whatsapp_number' } }),
-  ]);
+  let product: any = null;
+  let whatsappSetting: any = null;
+  let relatedProducts: any[] = [];
 
-  if (!product || product.status !== 'PUBLISHED') {
-    notFound();
+  try {
+    const results = await Promise.all([
+      prisma.product.findUnique({
+        where: { slug: params.slug },
+        include: {
+          category: true,
+          brand: true,
+          images: { orderBy: { sortOrder: 'asc' } },
+          variants: { orderBy: { sortOrder: 'asc' } },
+          reviews: {
+            where: { isApproved: true },
+            orderBy: { createdAt: 'desc' },
+          },
+        },
+      }),
+      prisma.siteSetting.findUnique({ where: { key: 'whatsapp_number' } }),
+    ]);
+
+    product = results[0];
+    whatsappSetting = results[1];
+
+    if (product && product.status === 'PUBLISHED') {
+      relatedProducts = await prisma.product.findMany({
+        where: {
+          status: 'PUBLISHED',
+          categoryId: product.categoryId,
+          id: { not: product.id },
+        },
+        include: {
+          category: true,
+          brand: true,
+          images: { orderBy: { sortOrder: 'asc' } },
+        },
+        take: 4,
+        orderBy: { createdAt: 'desc' },
+      });
+    }
+  } catch (err) {
+    console.warn('Database not available for product page, falling back to catalog:', err);
   }
 
-  // Related products
-  const relatedProducts = await prisma.product.findMany({
-    where: {
-      status: 'PUBLISHED',
-      categoryId: product.categoryId,
-      id: { not: product.id },
-    },
-    include: {
-      category: true,
-      brand: true,
-      images: { orderBy: { sortOrder: 'asc' } },
-    },
-    take: 4,
-    orderBy: { createdAt: 'desc' },
-  });
+  // Fallback to sample catalog if not in database
+  if (!product || product.status !== 'PUBLISHED') {
+    const sample = INITIAL_PRODUCTS.find((p) => p.slug === params.slug);
+    if (!sample) {
+      notFound();
+    }
+
+    product = {
+      id: sample.id,
+      title: sample.title,
+      slug: sample.slug,
+      sku: sample.slug.toUpperCase(),
+      basePrice: sample.basePrice,
+      originalPrice: sample.originalPrice || null,
+      condition: sample.condition,
+      stock: sample.stock,
+      shortDescription: sample.shortDescription || null,
+      description: sample.description || null,
+      warrantyInfo: sample.warrantyInfo || '7-Day Checking Warranty & 1-Year Service Support',
+      hasChargerOption: !!sample.hasChargerOption,
+      chargerDeduction: sample.chargerDeduction || 2500,
+      hasBagOption: !!sample.hasBagOption,
+      bagPrice: sample.bagPrice || 3500,
+      colors: sample.colors || ['Silver', 'Space Gray'],
+      specifications: sample.specifications || {},
+      category: {
+        id: sample.category?.slug || 'cat',
+        name: sample.category?.name || 'Laptops',
+        slug: sample.category?.slug || 'laptops',
+      },
+      brand: sample.brand ? { name: sample.brand.name } : null,
+      images: sample.images.map((img, idx) => ({
+        id: `img-${idx}`,
+        url: img.url,
+        alt: img.alt || sample.title,
+        isMain: idx === 0,
+      })),
+      variants: (sample.variants || []).map((v, idx) => ({
+        id: v.id || `var-${idx}`,
+        variantType: v.variantType,
+        label: v.label,
+        priceAdjustment: v.priceAdjustment,
+        isDefault: v.isDefault,
+      })),
+      reviews: (sample.reviewsList || []).map((r) => ({
+        id: r.id,
+        authorName: r.authorName,
+        rating: r.rating,
+        title: r.title || null,
+        comment: r.comment,
+        isVerified: r.isVerified,
+        isDemo: r.isDemo,
+        createdAt: r.createdAt,
+      })),
+    };
+
+    relatedProducts = INITIAL_PRODUCTS.filter(
+      (p) => p.category?.slug === sample.category?.slug && p.id !== sample.id
+    ).slice(0, 4);
+  }
 
   const breadcrumbs = [
     { label: product.category.name, href: `/${product.category.slug}` },
@@ -94,7 +180,7 @@ export default async function ProductDetailPage({
     '@type': 'Product',
     name: product.title,
     description: product.shortDescription || product.title,
-    image: product.images.map((img) => img.url),
+    image: (product.images || []).map((img: any) => img.url),
     brand: product.brand ? { '@type': 'Brand', name: product.brand.name } : undefined,
     sku: product.sku || undefined,
     offers: {
@@ -121,7 +207,7 @@ export default async function ProductDetailPage({
       <Breadcrumbs items={breadcrumbs} />
 
       <ProductDetailClient
-        product={product as any}
+        product={product}
         whatsappNumber={whatsappSetting?.value || '923134951239'}
       />
 

@@ -15,11 +15,43 @@ import {
   Layers,
   ChevronRight,
 } from 'lucide-react';
-import ProductCard from '@/components/product/ProductCard';
+import ProductCard, { ProductCardData } from '@/components/product/ProductCard';
 import PriceDisplay, { formatPKR } from '@/components/ui/PriceDisplay';
 import NewArrivalsCarousel from '@/components/home/NewArrivalsCarousel';
+import { INITIAL_PRODUCTS, INITIAL_CATEGORIES } from '@/data/catalog';
 
 export const dynamic = 'force-dynamic';
+
+function formatProduct(p: any): ProductCardData {
+  const revs = p.reviews || [];
+  const count = p.reviewCount !== undefined ? p.reviewCount : revs.length;
+  const avg =
+    p.rating !== undefined
+      ? p.rating
+      : count > 0
+      ? parseFloat((revs.reduce((sum: number, r: any) => sum + r.rating, 0) / count).toFixed(1))
+      : null;
+
+  return {
+    id: p.id,
+    title: p.title,
+    slug: p.slug,
+    basePrice: p.basePrice,
+    originalPrice: p.originalPrice,
+    stock: p.stock,
+    condition: p.condition as any,
+    isFeatured: p.isFeatured,
+    isOnSale: p.isOnSale,
+    category: p.category,
+    brand: p.brand,
+    specifications: (p.specifications || {}) as Record<string, any>,
+    images: (p.images || []).map((img: any) => ({ url: img.url, alt: img.alt })),
+    hasChargerOption: p.hasChargerOption,
+    hasBagOption: p.hasBagOption,
+    rating: avg,
+    reviewCount: count,
+  };
+}
 
 export default async function HomePage() {
   let featuredCategories: any[] = [];
@@ -132,34 +164,67 @@ export default async function HomePage() {
     console.warn('Database not available for HomePage query:', err);
   }
 
-  // Format carousel laptops
-  const formattedCarouselLaptops = carouselLaptops.map((p: any) => {
-    const revs = p.reviews || [];
-    const count = revs.length;
-    const avg =
-      count > 0
-        ? parseFloat((revs.reduce((sum: number, r: any) => sum + r.rating, 0) / count).toFixed(1))
-        : null;
-    return {
-      id: p.id,
-      title: p.title,
-      slug: p.slug,
-      basePrice: p.basePrice,
-      originalPrice: p.originalPrice,
-      stock: p.stock,
-      condition: p.condition as any,
-      isFeatured: p.isFeatured,
-      isOnSale: p.isOnSale,
-      category: p.category,
-      brand: p.brand,
-      specifications: (p.specifications || {}) as Record<string, any>,
-      images: (p.images || []).map((img: any) => ({ url: img.url, alt: img.alt })),
-      hasChargerOption: p.hasChargerOption,
-      hasBagOption: p.hasBagOption,
-      rating: avg,
-      reviewCount: count,
-    };
-  });
+  // Fallback to sample catalog if database has not yet been seeded
+  if (featuredCategories.length === 0) {
+    featuredCategories = INITIAL_CATEGORIES.map((c) => ({
+      ...c,
+      description: `Premium ${c.name} with warranty`,
+      _count: {
+        products: INITIAL_PRODUCTS.filter((p) => p.category?.slug === c.slug).length,
+      },
+    }));
+  }
+
+  if (carouselLaptops.length === 0) {
+    carouselLaptops = INITIAL_PRODUCTS.filter((p) => p.category?.slug === 'laptops').slice(0, 5);
+  }
+
+  if (featuredProducts.length === 0) {
+    featuredProducts = INITIAL_PRODUCTS.filter((p) => p.isFeatured).slice(0, 8);
+  }
+
+  if (latestArrivals.length === 0) {
+    latestArrivals = INITIAL_PRODUCTS.slice(0, 8);
+  }
+
+  if (saleProducts.length === 0) {
+    saleProducts = INITIAL_PRODUCTS.filter((p) => p.isOnSale).slice(0, 8);
+  }
+
+  if (under30kCount === 0 && from30to50Count === 0 && from50to100Count === 0) {
+    under30kCount = INITIAL_PRODUCTS.filter((p) => p.basePrice < 30000).length;
+    from30to50Count = INITIAL_PRODUCTS.filter((p) => p.basePrice >= 30000 && p.basePrice < 50000).length;
+    from50to100Count = INITIAL_PRODUCTS.filter((p) => p.basePrice >= 50000 && p.basePrice < 100000).length;
+    from100to150Count = INITIAL_PRODUCTS.filter((p) => p.basePrice >= 100000 && p.basePrice < 150000).length;
+    from150to200Count = INITIAL_PRODUCTS.filter((p) => p.basePrice >= 150000 && p.basePrice < 200000).length;
+    above200kCount = INITIAL_PRODUCTS.filter((p) => p.basePrice >= 200000).length;
+  }
+
+  if (branches.length === 0) {
+    branches = [
+      {
+        id: 'branch-lhr',
+        name: 'Lahore Flagship Branch',
+        city: 'Lahore',
+        address: 'Shop # 14-B, 2nd Floor, Hafeez Centre, Main Boulevard Gulberg III, Lahore',
+        contactNumber: '+92 313 4951239',
+        operatingHours: 'Monday – Saturday: 11:00 AM – 9:00 PM',
+      },
+      {
+        id: 'branch-isb',
+        name: 'Islamabad Display Centre',
+        city: 'Islamabad',
+        address: 'Office 3, Mezzanine Floor, Beverly Centre, Blue Area, Islamabad',
+        contactNumber: '+92 313 4951239',
+        operatingHours: 'Monday – Saturday: 11:30 AM – 8:30 PM',
+      },
+    ];
+  }
+
+  // Format products for clean card display
+  const formattedCarouselLaptops = carouselLaptops.map(formatProduct);
+  const formattedFeaturedProducts = featuredProducts.map(formatProduct);
+  const formattedSaleProducts = saleProducts.map(formatProduct);
 
   const budgetBands = [
     { label: 'Under Rs 30,000', minPrice: '0', maxPrice: '30000', count: under30kCount },
@@ -272,7 +337,7 @@ export default async function HomePage() {
         </section>
 
         {/* SECTION C: FEATURED PRODUCTS */}
-        {featuredProducts.length > 0 && (
+        {formattedFeaturedProducts.length > 0 && (
           <section className="space-y-6">
             <div className="flex items-end justify-between">
               <div>
@@ -286,8 +351,8 @@ export default async function HomePage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              {featuredProducts.map((p) => (
-                <ProductCard key={p.id} product={p as any} />
+              {formattedFeaturedProducts.map((p) => (
+                <ProductCard key={p.id} product={p} />
               ))}
             </div>
           </section>
@@ -335,7 +400,7 @@ export default async function HomePage() {
         )}
 
         {/* SECTION F: SPECIAL DEALS */}
-        {saleProducts.length > 0 && (
+        {formattedSaleProducts.length > 0 && (
           <section className="space-y-6">
             <div className="flex items-end justify-between">
               <div>
@@ -349,8 +414,8 @@ export default async function HomePage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              {saleProducts.map((p) => (
-                <ProductCard key={p.id} product={p as any} />
+              {formattedSaleProducts.map((p) => (
+                <ProductCard key={p.id} product={p} />
               ))}
             </div>
           </section>
