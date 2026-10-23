@@ -2,12 +2,35 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import * as bcrypt from 'bcryptjs';
 import { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_BRANDS } from '@/data/catalog';
+import { auth } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
+  return NextResponse.json(
+    { error: 'Public GET method disabled for security. Database seeding must be executed via CLI seed script or authenticated admin POST.' },
+    { status: 403 }
+  );
+}
+
+export async function POST(req: Request) {
   try {
-    console.log('Seeding database via API route...');
+    // 1. Strict Security Guard: Only authenticated Admin or authorized secret key
+    const session = await auth();
+    const authHeader = req.headers.get('authorization') || req.headers.get('x-seed-secret');
+    const secretKey = process.env.NEXTAUTH_SECRET || process.env.SEED_SECRET;
+
+    const isAdminSession = session?.user && (session.user as any).role === 'admin';
+    const isSecretAuthorized = secretKey && authHeader && authHeader.replace('Bearer ', '') === secretKey;
+
+    if (!isAdminSession && !isSecretAuthorized) {
+      return NextResponse.json(
+        { error: 'Unauthorized: Admin authentication or valid seed token required.' },
+        { status: 401 }
+      );
+    }
+
+    console.log('Seeding database via authenticated Admin route...');
 
     // 1. Admin
     const hashedPassword = await bcrypt.hash('Admin@LC2024!', 12);

@@ -22,7 +22,7 @@ interface ImageUploadProps {
 export const ImageUpload: React.FC<ImageUploadProps> = ({
   images,
   onChange,
-  maxImages = 5,
+  maxImages = 6,
 }) => {
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -171,7 +171,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 
       {/* Preview Grid */}
       {images.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
           {images.map((img, index) => (
             <div
               key={index}

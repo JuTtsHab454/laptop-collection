@@ -107,14 +107,8 @@ export const ProductCard: React.FC<{ product: ProductCardData }> = ({ product })
           </div>
 
           <div className="absolute top-2 right-2 z-10">
-            <span
-              className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider ${
-                product.condition === 'NEW'
-                  ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
-                  : 'bg-brand-slate text-accent-silver'
-              }`}
-            >
-              {product.condition}
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+              Brand New
             </span>
           </div>
 

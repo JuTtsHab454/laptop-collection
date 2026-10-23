@@ -293,27 +293,6 @@ export const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
         </div>
       )}
 
-      {/* Condition Filter */}
-      <div className="space-y-2.5">
-        <h4 className="font-bold text-xs uppercase tracking-wider text-gray-900 border-b pb-1.5">
-          Condition
-        </h4>
-        <div className="space-y-1.5">
-          {['', 'NEW', 'USED', 'REFURBISHED'].map((cond) => (
-            <label key={cond} className="flex items-center gap-2 cursor-pointer py-0.5">
-              <input
-                type="radio"
-                name="condition"
-                checked={selectedCondition === cond}
-                onChange={() => updateFilters({ condition: cond || null })}
-                className="text-accent-blue focus:ring-accent-blue w-3.5 h-3.5"
-              />
-              <span className="font-medium">{cond ? cond : 'All Conditions'}</span>
-            </label>
-          ))}
-        </div>
-      </div>
-
       {/* In Stock Only */}
       <div className="space-y-2 pt-2 border-t">
         <label className="flex items-center gap-2 cursor-pointer py-1 font-semibold text-gray-900">
@@ -434,20 +413,6 @@ export const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
                 onClick={() => updateFilters({ minPrice: null })}
                 className="hover:text-red-500 rounded-full"
                 aria-label="Remove min price filter"
-              >
-                <X className="w-3 h-3" />
-              </button>
-            </span>
-          )}
-
-          {selectedCondition && (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gray-100 border border-gray-300 text-gray-800 text-xs font-bold">
-              <span>Condition: {selectedCondition}</span>
-              <button
-                type="button"
-                onClick={() => updateFilters({ condition: null })}
-                className="hover:text-red-500 rounded-full"
-                aria-label="Remove condition filter"
               >
                 <X className="w-3 h-3" />
               </button>

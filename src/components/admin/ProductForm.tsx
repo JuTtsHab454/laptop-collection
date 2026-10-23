@@ -106,7 +106,7 @@ export default function ProductForm({
     initialData?.status || 'DRAFT'
   );
   const [condition, setCondition] = useState<'NEW' | 'USED' | 'REFURBISHED'>(
-    initialData?.condition || 'USED'
+    'NEW'
   );
   const [stock, setStock] = useState<number>(initialData?.stock ?? 5);
   const [lowStockThreshold, setLowStockThreshold] = useState<number>(
@@ -449,20 +449,8 @@ export default function ProductForm({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
             <label className="block text-xs font-semibold text-gray-300 mb-2">Condition</label>
-            <div className="flex items-center gap-4">
-              {(['NEW', 'USED', 'REFURBISHED'] as const).map((c) => (
-                <label key={c} className="flex items-center gap-2 cursor-pointer text-xs font-medium">
-                  <input
-                    type="radio"
-                    name="condition"
-                    value={c}
-                    checked={condition === c}
-                    onChange={() => setCondition(c)}
-                    className="text-accent-blue focus:ring-accent-blue"
-                  />
-                  <span>{c}</span>
-                </label>
-              ))}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-bold">
+              <span>✓ 100% Brand New Stock</span>
             </div>
           </div>
 
@@ -555,9 +543,9 @@ export default function ProductForm({
       {/* SECTION 4: IMAGES */}
       <div className="p-6 rounded-2xl bg-brand-charcoal border border-brand-steel space-y-4">
         <h3 className="text-base font-bold text-white border-b border-brand-steel pb-3">
-          Section 4: Product Images (Up to 5)
+          Section 4: Product Images (Up to 6)
         </h3>
-        <ImageUpload images={images} onChange={setImages} maxImages={5} />
+        <ImageUpload images={images} onChange={setImages} maxImages={6} />
       </div>
 
       {/* SECTION 5: CATEGORY-AWARE SPECIFICATIONS */}

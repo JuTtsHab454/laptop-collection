@@ -1,22 +1,50 @@
 const { PrismaClient } = require('@prisma/client');
-require('dotenv').config();
+const fs = require('fs');
+const path = require('path');
+const dotenv = require('dotenv');
+
+// Check .env.local, .env.production, then .env
+const envLocal = path.resolve(process.cwd(), '.env.local');
+const envProd = path.resolve(process.cwd(), '.env.production');
+if (fs.existsSync(envLocal)) {
+  dotenv.config({ path: envLocal });
+} else if (fs.existsSync(envProd)) {
+  dotenv.config({ path: envProd });
+} else {
+  dotenv.config();
+}
 
 const prisma = new PrismaClient();
 
 async function check() {
   const dbUrl = process.env.DATABASE_URL;
+  const directUrl = process.env.DIRECT_URL;
+
+  console.log('--- Database Target Configuration ---');
   if (!dbUrl) {
-    console.log('DATABASE_URL is not set.');
-    return;
+    console.log('DATABASE_URL is NOT set.');
+  } else {
+    try {
+      const u = new URL(dbUrl);
+      console.log('DATABASE_URL Host:', u.host);
+      console.log('DATABASE_URL Database:', u.pathname.replace('/', ''));
+      console.log('DATABASE_URL SSL:', u.searchParams.get('sslmode') || 'default');
+      console.log('Is Neon Host:', u.host.includes('neon.tech') ? 'YES (Neon Cloud)' : 'NO (Local/Other)');
+    } catch {
+      console.log('DATABASE_URL is set but could not be parsed as a URL');
+    }
   }
 
-  try {
-    const u = new URL(dbUrl);
-    console.log('Target DB Host:', u.host);
-    console.log('Target DB Name:', u.pathname.replace('/', ''));
-    console.log('Target DB SSL mode:', u.searchParams.get('sslmode') || 'default');
-  } catch (err) {
-    console.log('Could not parse DATABASE_URL as URL');
+  if (directUrl) {
+    try {
+      const du = new URL(directUrl);
+      console.log('DIRECT_URL Host:', du.host);
+      console.log('Is Direct Neon Host:', !du.host.includes('-pooler') && du.host.includes('neon.tech') ? 'YES (Direct unpooled)' : 'Unpooled/Direct');
+    } catch {
+      console.log('DIRECT_URL is set.');
+    }
+  } else {
+    console.log('DIRECT_URL is NOT set (Prisma will fall back to DATABASE_URL).');
   }
 
   console.log('\n--- Testing SELECT 1 ---');
