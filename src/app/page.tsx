@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import ProductCard from '@/components/product/ProductCard';
 import PriceDisplay, { formatPKR } from '@/components/ui/PriceDisplay';
+import NewArrivalsCarousel from '@/components/home/NewArrivalsCarousel';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,6 +25,7 @@ export default async function HomePage() {
   let featuredCategories: any[] = [];
   let featuredProducts: any[] = [];
   let latestArrivals: any[] = [];
+  let carouselLaptops: any[] = [];
   let saleProducts: any[] = [];
   let latestPosts: any[] = [];
   let branches: any[] = [];
@@ -33,6 +35,7 @@ export default async function HomePage() {
   let from100to150Count = 0;
   let from150to200Count = 0;
   let above200kCount = 0;
+  let whatsappNumber = '923134951239';
 
   try {
     const results = await Promise.all([
@@ -47,6 +50,7 @@ export default async function HomePage() {
           category: true,
           brand: true,
           images: { orderBy: { sortOrder: 'asc' } },
+          reviews: { where: { isApproved: true }, select: { rating: true } },
         },
         take: 8,
         orderBy: { createdAt: 'desc' },
@@ -57,6 +61,7 @@ export default async function HomePage() {
           category: true,
           brand: true,
           images: { orderBy: { sortOrder: 'asc' } },
+          reviews: { where: { isApproved: true }, select: { rating: true } },
         },
         take: 8,
         orderBy: { createdAt: 'desc' },
@@ -67,6 +72,7 @@ export default async function HomePage() {
           category: true,
           brand: true,
           images: { orderBy: { sortOrder: 'asc' } },
+          reviews: { where: { isApproved: true }, select: { rating: true } },
         },
         take: 8,
         orderBy: { createdAt: 'desc' },
@@ -94,6 +100,18 @@ export default async function HomePage() {
         where: { status: 'PUBLISHED', basePrice: { gte: 150000, lt: 200000 } },
       }),
       prisma.product.count({ where: { status: 'PUBLISHED', basePrice: { gte: 200000 } } }),
+      prisma.product.findMany({
+        where: { status: 'PUBLISHED', category: { slug: 'laptops' } },
+        include: {
+          category: true,
+          brand: true,
+          images: { orderBy: { sortOrder: 'asc' } },
+          reviews: { where: { isApproved: true }, select: { rating: true } },
+        },
+        take: 5,
+        orderBy: { createdAt: 'desc' },
+      }),
+      prisma.siteSetting.findUnique({ where: { key: 'whatsapp_number' } }),
     ]);
 
     featuredCategories = results[0];
@@ -108,9 +126,40 @@ export default async function HomePage() {
     from100to150Count = results[9];
     from150to200Count = results[10];
     above200kCount = results[11];
+    carouselLaptops = results[12];
+    if (results[13]?.value) whatsappNumber = results[13].value;
   } catch (err) {
     console.warn('Database not available for HomePage query:', err);
   }
+
+  // Format carousel laptops
+  const formattedCarouselLaptops = carouselLaptops.map((p: any) => {
+    const revs = p.reviews || [];
+    const count = revs.length;
+    const avg =
+      count > 0
+        ? parseFloat((revs.reduce((sum: number, r: any) => sum + r.rating, 0) / count).toFixed(1))
+        : null;
+    return {
+      id: p.id,
+      title: p.title,
+      slug: p.slug,
+      basePrice: p.basePrice,
+      originalPrice: p.originalPrice,
+      stock: p.stock,
+      condition: p.condition as any,
+      isFeatured: p.isFeatured,
+      isOnSale: p.isOnSale,
+      category: p.category,
+      brand: p.brand,
+      specifications: (p.specifications || {}) as Record<string, any>,
+      images: (p.images || []).map((img: any) => ({ url: img.url, alt: img.alt })),
+      hasChargerOption: p.hasChargerOption,
+      hasBagOption: p.hasBagOption,
+      rating: avg,
+      reviewCount: count,
+    };
+  });
 
   const budgetBands = [
     { label: 'Under Rs 30,000', minPrice: '0', maxPrice: '30000', count: under30kCount },
@@ -277,26 +326,12 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* SECTION E: LATEST ARRIVALS */}
-        {latestArrivals.length > 0 && (
-          <section className="space-y-6">
-            <div className="flex items-end justify-between">
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-accent-blue">Fresh Stock</span>
-                <h2 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Latest Arrivals</h2>
-              </div>
-              <Link href="/laptops" className="text-xs font-bold text-accent-blue hover:underline flex items-center gap-1">
-                <span>Browse Catalog</span>
-                <ChevronRight className="w-4 h-4" />
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              {latestArrivals.map((p) => (
-                <ProductCard key={p.id} product={p as any} />
-              ))}
-            </div>
-          </section>
+        {/* SECTION E: 5-LAPTOP NEW ARRIVALS 3D CAROUSEL */}
+        {formattedCarouselLaptops.length > 0 && (
+          <NewArrivalsCarousel
+            products={formattedCarouselLaptops}
+            whatsappNumber={whatsappNumber}
+          />
         )}
 
         {/* SECTION F: SPECIAL DEALS */}

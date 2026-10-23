@@ -87,6 +87,10 @@ export async function getFilteredProducts(params: ProductSearchParams) {
           category: { select: { id: true, name: true, slug: true } },
           brand: { select: { id: true, name: true, slug: true } },
           images: { orderBy: { sortOrder: 'asc' } },
+          reviews: {
+            where: { isApproved: true },
+            select: { rating: true },
+          },
         },
         skip: (page - 1) * limit,
         take: limit,
@@ -112,23 +116,36 @@ export async function getFilteredProducts(params: ProductSearchParams) {
     console.warn('Database error in getFilteredProducts:', err);
   }
 
-  const products: ProductCardData[] = rawProducts.map((p: any) => ({
-    id: p.id,
-    title: p.title,
-    slug: p.slug,
-    basePrice: p.basePrice,
-    originalPrice: p.originalPrice,
-    stock: p.stock,
-    condition: p.condition as any,
-    isFeatured: p.isFeatured,
-    isOnSale: p.isOnSale,
-    category: p.category,
-    brand: p.brand,
-    specifications: (p.specifications || {}) as Record<string, any>,
-    images: (p.images || []).map((img: any) => ({ url: img.url, alt: img.alt })),
-    hasChargerOption: p.hasChargerOption,
-    hasBagOption: p.hasBagOption,
-  }));
+  const products: ProductCardData[] = rawProducts.map((p: any) => {
+    const revs = p.reviews || [];
+    const count = revs.length;
+    const avg =
+      count > 0
+        ? parseFloat(
+            (revs.reduce((sum: number, r: any) => sum + r.rating, 0) / count).toFixed(1)
+          )
+        : null;
+
+    return {
+      id: p.id,
+      title: p.title,
+      slug: p.slug,
+      basePrice: p.basePrice,
+      originalPrice: p.originalPrice,
+      stock: p.stock,
+      condition: p.condition as any,
+      isFeatured: p.isFeatured,
+      isOnSale: p.isOnSale,
+      category: p.category,
+      brand: p.brand,
+      specifications: (p.specifications || {}) as Record<string, any>,
+      images: (p.images || []).map((img: any) => ({ url: img.url, alt: img.alt })),
+      hasChargerOption: p.hasChargerOption,
+      hasBagOption: p.hasBagOption,
+      rating: avg,
+      reviewCount: count,
+    };
+  });
 
   return {
     products,

@@ -15,7 +15,11 @@ export const Logo: React.FC<LogoProps> = ({
   const isLight = variant === 'light';
 
   return (
-    <Link href="/" className={`inline-flex items-center gap-2.5 group ${className}`} aria-label="Laptop Collection Home">
+    <Link
+      href="/"
+      className={`inline-flex items-center gap-2.5 group max-w-full min-w-0 ${className}`}
+      aria-label="Laptop Collection Home"
+    >
       {/* Geometric LC + Laptop Monogram Icon */}
       <div className="relative w-9 h-9 sm:w-10 sm:h-10 flex-shrink-0 flex items-center justify-center rounded-xl bg-gradient-to-br from-accent-blue via-accent-blue-dark to-brand-navy p-1.5 shadow-md shadow-accent-blue/20 group-hover:shadow-accent-blue/40 transition-all duration-300">
         <svg
@@ -35,20 +39,20 @@ export const Logo: React.FC<LogoProps> = ({
       </div>
 
       {showText && (
-        <div className="flex flex-col leading-none">
-          <div className="flex items-center gap-1">
+        <div className="flex flex-col leading-tight min-w-0">
+          <div className="flex flex-wrap sm:flex-nowrap items-baseline gap-x-1 min-w-0">
             <span
-              className={`font-black tracking-tight text-lg sm:text-xl ${
-                isLight ? 'text-white' : 'text-surface-white'
+              className={`font-black tracking-tight text-base sm:text-lg whitespace-nowrap ${
+                isLight ? 'text-white' : 'text-brand-navy'
               }`}
             >
               LAPTOP
             </span>
-            <span className="font-extrabold text-accent-blue tracking-tight text-lg sm:text-xl">
+            <span className="font-extrabold text-accent-blue tracking-tight text-base sm:text-lg whitespace-nowrap">
               COLLECTION
             </span>
           </div>
-          <span className="text-[10px] tracking-widest text-accent-silver font-semibold uppercase">
+          <span className="text-[10px] tracking-widest text-accent-silver font-semibold uppercase block">
             Pakistan
           </span>
         </div>

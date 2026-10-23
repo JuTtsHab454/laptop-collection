@@ -54,6 +54,10 @@ export default async function ProductDetailPage({
         brand: true,
         images: { orderBy: { sortOrder: 'asc' } },
         variants: { orderBy: { sortOrder: 'asc' } },
+        reviews: {
+          where: { isApproved: true },
+          orderBy: { createdAt: 'desc' },
+        },
       },
     }),
     prisma.siteSetting.findUnique({ where: { key: 'whatsapp_number' } }),

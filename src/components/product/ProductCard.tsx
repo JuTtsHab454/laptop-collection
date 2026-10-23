@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ShoppingCart, Eye } from 'lucide-react';
+import { ShoppingCart, Eye, Star } from 'lucide-react';
 import PriceDisplay from '@/components/ui/PriceDisplay';
 import Badge from '@/components/ui/Badge';
 import { useCartStore } from '@/store/useCartStore';
@@ -25,6 +25,8 @@ export interface ProductCardData {
   images: { url: string; alt?: string | null }[];
   hasChargerOption?: boolean;
   hasBagOption?: boolean;
+  rating?: number | null;
+  reviewCount?: number | null;
 }
 
 export const ProductCard: React.FC<{ product: ProductCardData }> = ({ product }) => {
@@ -140,10 +142,32 @@ export const ProductCard: React.FC<{ product: ProductCardData }> = ({ product })
 
         {/* Title */}
         <Link href={`/products/${product.slug}`} className="block">
-          <h3 className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white line-clamp-2 hover:text-accent-blue transition-colors mb-2 min-h-[36px]">
+          <h3 className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white line-clamp-2 hover:text-accent-blue transition-colors mb-1.5 min-h-[36px]">
             {product.title}
           </h3>
         </Link>
+
+        {/* Rating Stars (when present) */}
+        {product.rating ? (
+          <div className="flex items-center gap-1.5 text-xs mb-2">
+            <div className="flex items-center text-amber-400">
+              <Star className="w-3.5 h-3.5 fill-current" />
+            </div>
+            <span className="font-bold text-gray-800 dark:text-gray-200 text-xs">
+              {product.rating.toFixed(1)}
+            </span>
+            {product.reviewCount !== undefined && product.reviewCount !== null && (
+              <span className="text-[11px] text-gray-400">
+                ({product.reviewCount})
+              </span>
+            )}
+          </div>
+        ) : (
+          <div className="flex items-center gap-1 text-[11px] text-gray-400 mb-2">
+            <Star className="w-3 h-3 text-gray-300" />
+            <span>New arrival</span>
+          </div>
+        )}
 
         {/* Key Specs for Laptops */}
         {isLaptop && (cpu || ram || ssd || display) && (

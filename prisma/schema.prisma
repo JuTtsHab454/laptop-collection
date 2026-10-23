@@ -132,6 +132,7 @@ model Product {
   // Relations
   images            ProductImage[]
   variants          ProductVariant[]
+  reviews           Review[]
   orderItems        OrderItem[]
   discounts         Discount[]
 
@@ -173,6 +174,25 @@ model ProductVariant {
 
   @@index([productId])
   @@index([variantType])
+}
+
+// ─── REVIEWS & RATINGS ───
+model Review {
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  authorName String
+  rating     Int      // 1 to 5 stars
+  title      String?
+  comment    String
+  isVerified Boolean  @default(false)
+  isApproved Boolean  @default(true)
+  isDemo     Boolean  @default(false) // clearly flags sample/demonstration reviews
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([productId])
+  @@index([isApproved])
 }
 
 // ─── ORDERS ───

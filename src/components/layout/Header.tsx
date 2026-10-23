@@ -235,13 +235,6 @@ export const Header: React.FC = () => {
             </Link>
 
             <Link
-              href="/blog"
-              className="text-sm font-semibold text-gray-200 hover:text-accent-blue transition-colors"
-            >
-              Blog
-            </Link>
-
-            <Link
               href="/contact"
               className="text-sm font-semibold text-gray-200 hover:text-accent-blue transition-colors"
             >
