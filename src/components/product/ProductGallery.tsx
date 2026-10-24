@@ -27,7 +27,7 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({ images, title })
       : [
           {
             id: 'placeholder',
-            url: '/placeholder-laptop.svg',
+            url: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=1000&q=80',
             alt: title,
           },
         ];
@@ -45,23 +45,26 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({ images, title })
   };
 
   return (
-    <div className="flex flex-col gap-3 w-full">
-      {/* Main Image Frame */}
+    <div className="flex flex-col gap-3.5 w-full">
+      {/* Main Image Frame with Ambient Amber Glow */}
       <div
         onClick={() => setLightboxOpen(true)}
-        className="group relative aspect-[4/3] w-full rounded-2xl overflow-hidden bg-white dark:bg-brand-charcoal border border-surface-muted dark:border-brand-steel shadow-sm cursor-zoom-in"
+        className="group relative aspect-[4/3] w-full rounded-3xl overflow-hidden bg-gradient-to-b from-[#131929] via-[#0D121F] to-[#080B12] border border-white/[0.08] hover:border-amber-500/40 shadow-2xl cursor-zoom-in transition-all duration-300"
       >
+        {/* Radial Gold Backlight */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.1)_0%,transparent_70%)] pointer-events-none" />
+
         <Image
           src={currentImage.url}
           alt={currentImage.alt || title}
           fill
           priority
           sizes="(max-width: 1024px) 100vw, 55vw"
-          className="object-contain p-4 transition-all duration-300 group-hover:scale-105"
+          className="object-contain p-6 transition-all duration-500 group-hover:scale-105 drop-shadow-2xl"
         />
 
         {/* Zoom Overlay Indicator */}
-        <div className="absolute bottom-3 right-3 p-2 rounded-xl bg-brand-navy/60 backdrop-blur-md text-white opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute bottom-3.5 right-3.5 p-2 rounded-xl bg-[#090D17]/80 border border-white/[0.1] text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-md shadow-md">
           <Maximize2 className="w-4 h-4" />
         </div>
 
@@ -70,14 +73,14 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({ images, title })
           <>
             <button
               onClick={handlePrev}
-              className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-brand-navy/60 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-brand-navy"
+              className="absolute left-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-[#090D17]/80 border border-white/[0.08] text-amber-400 opacity-0 group-hover:opacity-100 transition-all hover:bg-amber-500 hover:text-black backdrop-blur-md shadow-lg"
               aria-label="Previous image"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={handleNext}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-brand-navy/60 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-brand-navy"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-[#090D17]/80 border border-white/[0.08] text-amber-400 opacity-0 group-hover:opacity-100 transition-all hover:bg-amber-500 hover:text-black backdrop-blur-md shadow-lg"
               aria-label="Next image"
             >
               <ChevronRight className="w-5 h-5" />
@@ -88,15 +91,15 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({ images, title })
 
       {/* Thumbnail Strip */}
       {displayImages.length > 1 && (
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
+        <div className="flex items-center gap-2.5 overflow-x-auto pb-2 scrollbar-thin">
           {displayImages.map((img, idx) => (
             <button
               key={img.id || idx}
               onClick={() => setSelectedIndex(idx)}
-              className={`relative flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-white dark:bg-brand-charcoal border-2 transition-all ${
+              className={`relative flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-[#0D121F] border-2 transition-all p-1.5 ${
                 selectedIndex === idx
-                  ? 'border-accent-blue ring-2 ring-accent-blue/20 shadow-md'
-                  : 'border-surface-muted dark:border-brand-steel opacity-70 hover:opacity-100'
+                  ? 'border-amber-400 ring-2 ring-amber-400/25 shadow-lg shadow-amber-500/20 scale-105'
+                  : 'border-white/[0.08] opacity-60 hover:opacity-100 hover:border-amber-500/40'
               }`}
               aria-label={`View image ${idx + 1}`}
             >
@@ -114,13 +117,13 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({ images, title })
 
       {/* Lightbox / Fullscreen Modal */}
       {lightboxOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-xl p-4 animate-in fade-in duration-200">
           <button
             onClick={() => setLightboxOpen(false)}
             className="absolute top-4 right-4 p-2.5 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors z-50"
             aria-label="Close fullscreen"
           >
-            <X className="w-6 h-6" />
+            <X className="w-6 h-6 text-amber-400" />
           </button>
 
           {/* Previous / Next buttons */}
@@ -128,34 +131,29 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({ images, title })
             <>
               <button
                 onClick={handlePrev}
-                className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors z-50"
+                className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 text-white hover:bg-amber-500 hover:text-black transition-all z-50"
                 aria-label="Previous image"
               >
-                <ChevronLeft className="w-8 h-8" />
+                <ChevronLeft className="w-7 h-7" />
               </button>
               <button
                 onClick={handleNext}
-                className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors z-50"
+                className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 text-white hover:bg-amber-500 hover:text-black transition-all z-50"
                 aria-label="Next image"
               >
-                <ChevronRight className="w-8 h-8" />
+                <ChevronRight className="w-7 h-7" />
               </button>
             </>
           )}
 
-          {/* Main Lightbox Image */}
-          <div className="relative w-full max-w-4xl h-[75vh] flex items-center justify-center">
+          <div className="relative w-full max-w-4xl h-[75vh]">
             <Image
               src={currentImage.url}
               alt={currentImage.alt || title}
               fill
-              className="object-contain"
               sizes="90vw"
+              className="object-contain"
             />
-          </div>
-
-          <div className="absolute bottom-6 text-center text-xs text-gray-400">
-            Image {selectedIndex + 1} of {displayImages.length} • {title}
           </div>
         </div>
       )}

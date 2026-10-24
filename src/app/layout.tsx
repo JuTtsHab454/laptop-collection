@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     template: '%s | Laptop Collection',
   },
   description:
-    "Pakistan's trusted laptop retailer. Shop premium new and refurbished laptops, RAM, SSDs, chargers, and accessories with delivery across Pakistan.",
+    "Pakistan's trusted laptop retailer. Shop premium new laptops, RAM, SSDs, chargers, and accessories with delivery across Pakistan.",
   icons: {
     icon: [
       { url: '/favicon.ico' },
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     siteName: 'Laptop Collection',
     title: 'Laptop Collection — Premium Laptops in Pakistan',
     description:
-      'Shop premium new and refurbished laptops, RAM, SSDs, and accessories with delivery across Pakistan.',
+      'Shop premium new laptops, RAM, SSDs, and accessories with delivery across Pakistan.',
     images: [{ url: '/icon.svg', width: 1200, height: 630 }],
   },
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
@@ -49,22 +49,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
-      <body className="font-sans antialiased bg-surface-cream text-gray-900">
+      <body className="font-sans antialiased bg-brand-dark text-slate-100 min-h-screen">
         <Toaster
           position="top-right"
           toastOptions={{
             duration: 4000,
             style: {
-              background: '#0F1B2D',
-              color: '#fff',
+              background: '#0F1420',
+              color: '#F8FAFC',
               fontSize: '13px',
-              borderRadius: '10px',
-              border: '1px solid #2D3F52',
+              borderRadius: '12px',
+              border: '1px solid rgba(245, 158, 11, 0.3)',
+              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(245, 158, 11, 0.2)',
             },
             success: {
               iconTheme: {
                 primary: '#10B981',
-                secondary: '#FFFFFF',
+                secondary: '#07090E',
               },
             },
             error: {

@@ -3,36 +3,93 @@
 @tailwind utilities;
 
 :root {
-  --background: #F8FAFC;
-  --foreground: #0F1B2D;
+  --background: #07090E;
+  --foreground: #F8FAFC;
 }
 
 body {
   color: var(--foreground);
   background-color: var(--background);
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(245, 158, 11, 0.08), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 85% 60%, rgba(139, 92, 246, 0.04), transparent 60%);
+  background-attachment: fixed;
+  overflow-x: hidden;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+
+  /* Ultra-luxury dark glass panel */
+  .glass-luxury {
+    background: rgba(15, 20, 32, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* Radiant gold border glow */
+  .gold-glow-hover {
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .gold-glow-hover:hover {
+    border-color: rgba(245, 158, 11, 0.5);
+    box-shadow: 0 10px 30px -5px rgba(245, 158, 11, 0.18), 0 0 1px 1px rgba(245, 158, 11, 0.3);
+  }
+
+  /* Gradient text */
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #FDE68A 0%, #F59E0B 50%, #D97706 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-silver {
+    background: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 50%, #94A3B8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Animated gradient button */
+  .btn-gradient-gold {
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    box-shadow: 0 4px 18px rgba(245, 158, 11, 0.3);
+    transition: all 0.3s ease;
+  }
+  .btn-gradient-gold:hover {
+    background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+    box-shadow: 0 6px 24px rgba(245, 158, 11, 0.45);
+    transform: translateY(-1px);
+  }
+  .btn-gradient-gold:active {
+    transform: translateY(0) scale(0.98);
+  }
 }
 
-/* Custom scrollbars */
+/* Custom Luxury Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #07090E;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #94A3B8;
-  border-radius: 4px;
+  background: #242E44;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #64748B;
+  background: #F59E0B;
+}
+
+/* Smooth selection */
+::selection {
+  background: #F59E0B;
+  color: #07090E;
 }

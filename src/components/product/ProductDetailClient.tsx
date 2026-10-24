@@ -262,10 +262,10 @@ export default function ProductDetailClient({
         </div>
 
         {/* Right Column: Pricing & Options (40% on desktop) */}
-        <div className="lg:col-span-5 space-y-6 bg-white p-6 sm:p-8 rounded-3xl border border-surface-muted shadow-sm">
+        <div className="lg:col-span-5 space-y-6 bg-[#0E1322]/95 backdrop-blur-xl p-6 sm:p-8 rounded-3xl border border-white/[0.08] shadow-2xl text-slate-100">
           {/* Brand & Stock Status */}
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-accent-silver">
+            <span className="text-xs font-black uppercase tracking-widest text-amber-400">
               {product.brand?.name || product.category.name}
             </span>
             <span className="flex items-center gap-1.5 text-xs font-semibold">
@@ -274,14 +274,14 @@ export default function ProductDetailClient({
                   isOutOfStock ? 'bg-status-error' : 'bg-status-success animate-pulse'
                 }`}
               />
-              <span className={isOutOfStock ? 'text-status-error' : 'text-emerald-700'}>
+              <span className={isOutOfStock ? 'text-status-error' : 'text-emerald-400'}>
                 {isOutOfStock ? 'Out of Stock' : `In Stock (${product.stock} available)`}
               </span>
             </span>
           </div>
 
           {/* Title */}
-          <h1 className="text-xl sm:text-2xl font-black text-gray-900 leading-snug">
+          <h1 className="text-xl sm:text-2xl font-black text-white leading-snug">
             {product.title}
           </h1>
 
@@ -301,13 +301,13 @@ export default function ProductDetailClient({
                     <Star
                       key={s}
                       className={`w-3.5 h-3.5 ${
-                        s <= Math.round(avgRating) ? 'fill-current' : 'text-gray-300'
+                        s <= Math.round(avgRating) ? 'fill-current' : 'text-slate-600'
                       }`}
                     />
                   ))}
                 </div>
-                <span className="font-bold text-gray-900">{avgRating.toFixed(1)}</span>
-                <span className="text-gray-400">
+                <span className="font-bold text-white">{avgRating.toFixed(1)}</span>
+                <span className="text-slate-400">
                   ({reviewCount} customer {reviewCount === 1 ? 'review' : 'reviews'})
                 </span>
               </button>
@@ -318,21 +318,21 @@ export default function ProductDetailClient({
                   setActiveTab('reviews');
                   document.getElementById('product-tabs')?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="flex items-center gap-1 text-gray-400 hover:text-accent-blue transition-colors text-xs"
+                className="flex items-center gap-1 text-slate-400 hover:text-amber-400 transition-colors text-xs"
               >
-                <Star className="w-3.5 h-3.5 text-gray-300" />
-                <span>No reviews yet • Be the first to review</span>
+                <Star className="w-3.5 h-3.5 text-amber-400" />
+                <span>No reviews yet &bull; Be the first to review</span>
               </button>
             )}
           </div>
 
           {/* Condition and SKU badges */}
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold px-2.5 py-1 rounded-md bg-brand-navy text-white uppercase">
-              {product.condition}
+            <span className="text-xs font-black px-2.5 py-1 rounded-md bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 uppercase">
+              Brand New
             </span>
             {product.sku && (
-              <span className="text-xs font-mono text-gray-500 bg-surface-cream px-2.5 py-1 rounded border">
+              <span className="text-xs font-mono text-slate-400 bg-[#090D17] px-2.5 py-1 rounded border border-white/[0.08]">
                 SKU: {product.sku}
               </span>
             )}
@@ -351,7 +351,7 @@ export default function ProductDetailClient({
             {/* RAM Options */}
             {ramVariants.length > 0 && (
               <div className="space-y-2">
-                <label className="block text-xs font-bold text-gray-900 uppercase tracking-wider">
+                <label className="block text-xs font-bold text-slate-200 uppercase tracking-wider">
                   RAM Memory Upgrade:
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -364,12 +364,12 @@ export default function ProductDetailClient({
                         onClick={() => setSelectedRam(v)}
                         className={`p-2.5 rounded-xl border text-left text-xs font-bold transition-all ${
                           isSelected
-                            ? 'border-accent-blue bg-accent-blue/10 text-accent-blue ring-1 ring-accent-blue'
-                            : 'border-surface-muted bg-white text-gray-700 hover:border-gray-400'
+                            ? 'border-amber-400 bg-amber-500/15 text-amber-300 ring-1 ring-amber-400'
+                            : 'border-white/[0.08] bg-[#090D17] text-slate-300 hover:border-amber-500/40'
                         }`}
                       >
                         <div>{v.label}</div>
-                        <div className="text-[11px] text-gray-500 font-mono mt-0.5">
+                        <div className="text-[11px] text-amber-400/80 font-mono mt-0.5">
                           {v.isDefault ? 'Default' : `+Rs ${formatPKR(v.priceAdjustment)}`}
                         </div>
                       </button>
@@ -382,7 +382,7 @@ export default function ProductDetailClient({
             {/* SSD Options */}
             {ssdVariants.length > 0 && (
               <div className="space-y-2">
-                <label className="block text-xs font-bold text-gray-900 uppercase tracking-wider">
+                <label className="block text-xs font-bold text-slate-200 uppercase tracking-wider">
                   Solid State Drive (SSD) Upgrade:
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -395,12 +395,12 @@ export default function ProductDetailClient({
                         onClick={() => setSelectedSsd(v)}
                         className={`p-2.5 rounded-xl border text-left text-xs font-bold transition-all ${
                           isSelected
-                            ? 'border-accent-blue bg-accent-blue/10 text-accent-blue ring-1 ring-accent-blue'
-                            : 'border-surface-muted bg-white text-gray-700 hover:border-gray-400'
+                            ? 'border-amber-400 bg-amber-500/15 text-amber-300 ring-1 ring-amber-400'
+                            : 'border-white/[0.08] bg-[#090D17] text-slate-300 hover:border-amber-500/40'
                         }`}
                       >
                         <div>{v.label}</div>
-                        <div className="text-[11px] text-gray-500 font-mono mt-0.5">
+                        <div className="text-[11px] text-amber-400/80 font-mono mt-0.5">
                           {v.isDefault ? 'Default' : `+Rs ${formatPKR(v.priceAdjustment)}`}
                         </div>
                       </button>
@@ -413,7 +413,7 @@ export default function ProductDetailClient({
             {/* Charger Option */}
             {product.hasChargerOption && (
               <div className="space-y-2">
-                <label className="block text-xs font-bold text-gray-900 uppercase tracking-wider">
+                <label className="block text-xs font-bold text-slate-200 uppercase tracking-wider">
                   Charger Option:
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -422,12 +422,12 @@ export default function ProductDetailClient({
                     onClick={() => setWithCharger(true)}
                     className={`p-2.5 rounded-xl border text-left text-xs font-bold transition-all ${
                       withCharger
-                        ? 'border-accent-blue bg-accent-blue/10 text-accent-blue ring-1 ring-accent-blue'
-                        : 'border-surface-muted bg-white text-gray-700'
+                        ? 'border-amber-400 bg-amber-500/15 text-amber-300 ring-1 ring-amber-400'
+                        : 'border-white/[0.08] bg-[#090D17] text-slate-300 hover:border-amber-500/40'
                     }`}
                   >
                     <div>With Charger</div>
-                    <div className="text-[11px] text-gray-500 mt-0.5">Original Included</div>
+                    <div className="text-[11px] text-slate-400 mt-0.5">Original Included</div>
                   </button>
 
                   <button
@@ -435,12 +435,12 @@ export default function ProductDetailClient({
                     onClick={() => setWithCharger(false)}
                     className={`p-2.5 rounded-xl border text-left text-xs font-bold transition-all ${
                       !withCharger
-                        ? 'border-accent-blue bg-accent-blue/10 text-accent-blue ring-1 ring-accent-blue'
-                        : 'border-surface-muted bg-white text-gray-700'
+                        ? 'border-amber-400 bg-amber-500/15 text-amber-300 ring-1 ring-amber-400'
+                        : 'border-white/[0.08] bg-[#090D17] text-slate-300 hover:border-amber-500/40'
                     }`}
                   >
                     <div>Without Charger</div>
-                    <div className="text-[11px] text-emerald-600 font-mono mt-0.5">
+                    <div className="text-[11px] text-emerald-400 font-mono mt-0.5">
                       Save Rs {formatPKR(product.chargerDeduction)}
                     </div>
                   </button>
@@ -450,10 +450,10 @@ export default function ProductDetailClient({
 
             {/* Laptop Bag Option */}
             {product.hasBagOption && (
-              <div className="p-3.5 rounded-xl bg-surface-cream border border-surface-muted flex items-center justify-between">
+              <div className="p-3.5 rounded-xl bg-[#090D17] border border-white/[0.08] flex items-center justify-between">
                 <div>
-                  <span className="text-xs font-bold text-gray-900 block">Add Laptop Bag</span>
-                  <span className="text-[11px] text-gray-500">
+                  <span className="text-xs font-bold text-slate-200 block">Add Laptop Bag</span>
+                  <span className="text-[11px] text-slate-400">
                     Protective carry sleeve (+Rs {formatPKR(product.bagPrice)})
                   </span>
                 </div>
@@ -461,7 +461,7 @@ export default function ProductDetailClient({
                   type="checkbox"
                   checked={withBag}
                   onChange={(e) => setWithBag(e.target.checked)}
-                  className="w-4 h-4 rounded text-accent-blue focus:ring-accent-blue cursor-pointer"
+                  className="w-4 h-4 rounded border-white/20 bg-[#07090E] text-amber-500 focus:ring-amber-500 cursor-pointer"
                 />
               </div>
             )}
@@ -469,7 +469,7 @@ export default function ProductDetailClient({
             {/* Color selection if multiple */}
             {product.colors.length > 1 && (
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-gray-900 uppercase tracking-wider">
+                <label className="block text-xs font-bold text-slate-200 uppercase tracking-wider">
                   Color:
                 </label>
                 <div className="flex gap-2">
@@ -480,8 +480,8 @@ export default function ProductDetailClient({
                       onClick={() => setSelectedColor(c)}
                       className={`px-3 py-1.5 rounded-lg border text-xs font-semibold ${
                         selectedColor === c
-                          ? 'border-accent-blue bg-accent-blue/10 text-accent-blue'
-                          : 'border-surface-muted bg-white text-gray-700'
+                          ? 'border-amber-400 bg-amber-500/15 text-amber-300'
+                          : 'border-white/[0.08] bg-[#090D17] text-slate-300'
                       }`}
                     >
                       {c}
@@ -493,25 +493,25 @@ export default function ProductDetailClient({
 
             {/* Quantity Selector */}
             <div className="flex items-center justify-between pt-2">
-              <span className="text-xs font-bold text-gray-900 uppercase tracking-wider">
+              <span className="text-xs font-bold text-slate-200 uppercase tracking-wider">
                 Quantity:
               </span>
-              <div className="flex items-center border border-surface-muted rounded-xl bg-white overflow-hidden">
+              <div className="flex items-center border border-white/[0.08] rounded-xl bg-[#090D17] overflow-hidden">
                 <button
                   type="button"
                   disabled={quantity <= 1}
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  className="p-2.5 hover:bg-surface-cream disabled:opacity-40 text-gray-600"
+                  className="p-2.5 hover:bg-white/[0.05] disabled:opacity-40 text-slate-400 hover:text-white"
                   aria-label="Decrease quantity"
                 >
                   <Minus className="w-3.5 h-3.5" />
                 </button>
-                <span className="w-12 text-center text-xs font-bold font-mono">{quantity}</span>
+                <span className="w-12 text-center text-xs font-bold font-mono text-white">{quantity}</span>
                 <button
                   type="button"
                   disabled={quantity >= product.stock}
                   onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
-                  className="p-2.5 hover:bg-surface-cream disabled:opacity-40 text-gray-600"
+                  className="p-2.5 hover:bg-white/[0.05] disabled:opacity-40 text-slate-400 hover:text-white"
                   aria-label="Increase quantity"
                 >
                   <Plus className="w-3.5 h-3.5" />
@@ -520,10 +520,10 @@ export default function ProductDetailClient({
             </div>
 
             {/* Total Price Summary */}
-            <div className="pt-4 border-t border-surface-muted flex items-center justify-between">
+            <div className="pt-4 border-t border-white/[0.08] flex items-center justify-between">
               <div>
-                <span className="text-xs text-gray-500 block">Total for {quantity} item(s):</span>
-                <span className="text-xl sm:text-2xl font-black text-accent-blue font-mono">
+                <span className="text-xs text-slate-400 block">Total for {quantity} item(s):</span>
+                <span className="text-xl sm:text-2xl font-black text-amber-400 font-mono drop-shadow-[0_0_12px_rgba(245,158,11,0.25)]">
                   Rs {formatPKR(lineTotal)}
                 </span>
               </div>
@@ -535,10 +535,10 @@ export default function ProductDetailClient({
                 type="button"
                 disabled={isOutOfStock}
                 onClick={handleAddToCart}
-                className={`w-full py-3.5 px-6 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-2 shadow-lg transition-all active:scale-98 ${
+                className={`w-full py-3.5 px-6 rounded-xl font-black text-sm text-white flex items-center justify-center gap-2 shadow-xl transition-all active:scale-95 ${
                   isOutOfStock
-                    ? 'bg-gray-400 cursor-not-allowed opacity-50'
-                    : 'bg-accent-blue hover:bg-accent-blue-dark shadow-accent-blue/20'
+                    ? 'bg-slate-700/50 cursor-not-allowed opacity-50'
+                    : 'bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 hover:from-amber-400 hover:to-orange-500 shadow-amber-500/25 border border-amber-300/30'
                 }`}
               >
                 <ShoppingCart className="w-4 h-4" />
@@ -549,26 +549,26 @@ export default function ProductDetailClient({
                 type="button"
                 disabled={isOutOfStock}
                 onClick={handleBuyViaWhatsApp}
-                className={`w-full py-3 px-6 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-2 transition-all active:scale-98 ${
+                className={`w-full py-3 px-6 rounded-xl font-black text-sm text-white flex items-center justify-center gap-2 transition-all active:scale-95 ${
                   isOutOfStock
-                    ? 'bg-gray-300 cursor-not-allowed opacity-50'
-                    : 'bg-[#25D366] hover:brightness-105 shadow-md shadow-emerald-500/20'
+                    ? 'bg-slate-800 cursor-not-allowed opacity-50'
+                    : 'bg-emerald-600/30 hover:bg-emerald-600/40 border border-emerald-500/40 text-emerald-300 shadow-md shadow-emerald-500/20'
                 }`}
               >
-                <MessageCircle className="w-4 h-4" />
+                <MessageCircle className="w-4 h-4 text-emerald-400" />
                 <span>Buy via WhatsApp</span>
               </button>
             </div>
 
             {/* Delivery & Payment note */}
-            <div className="pt-4 border-t border-surface-muted space-y-2 text-xs text-gray-500">
+            <div className="pt-4 border-t border-white/[0.08] space-y-2 text-xs text-slate-400">
               <div className="flex items-center gap-2">
-                <Truck className="w-4 h-4 text-accent-blue" />
+                <Truck className="w-4 h-4 text-amber-400" />
                 <span>Nationwide delivery across Pakistan via secure courier</span>
               </div>
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>Advance bank transfer required with verification</span>
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <span>Advance bank transfer required with instant verification</span>
               </div>
             </div>
           </div>
@@ -576,15 +576,15 @@ export default function ProductDetailClient({
       </div>
 
       {/* Tabs: Description / Specifications / Warranty / Reviews */}
-      <div id="product-tabs" className="bg-white rounded-3xl border border-surface-muted p-6 sm:p-10 shadow-sm space-y-6">
-        <div className="flex flex-wrap items-center gap-2 sm:gap-3 border-b border-surface-muted pb-4">
+      <div id="product-tabs" className="bg-[#0E1322]/95 backdrop-blur-xl rounded-3xl border border-white/[0.08] p-6 sm:p-10 shadow-2xl space-y-6 text-slate-100">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 border-b border-white/[0.08] pb-4">
           <button
             type="button"
             onClick={() => setActiveTab('specs')}
-            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-black transition-all ${
               activeTab === 'specs'
-                ? 'bg-accent-blue text-white shadow-sm'
-                : 'text-gray-500 hover:text-gray-900'
+                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/25'
+                : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
             }`}
           >
             Technical Specifications
@@ -593,10 +593,10 @@ export default function ProductDetailClient({
           <button
             type="button"
             onClick={() => setActiveTab('desc')}
-            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-black transition-all ${
               activeTab === 'desc'
-                ? 'bg-accent-blue text-white shadow-sm'
-                : 'text-gray-500 hover:text-gray-900'
+                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/25'
+                : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
             }`}
           >
             Product Overview
@@ -605,10 +605,10 @@ export default function ProductDetailClient({
           <button
             type="button"
             onClick={() => setActiveTab('warranty')}
-            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-black transition-all ${
               activeTab === 'warranty'
-                ? 'bg-accent-blue text-white shadow-sm'
-                : 'text-gray-500 hover:text-gray-900'
+                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/25'
+                : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
             }`}
           >
             Warranty &amp; Check Time
@@ -617,10 +617,10 @@ export default function ProductDetailClient({
           <button
             type="button"
             onClick={() => setActiveTab('reviews')}
-            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-black transition-all ${
               activeTab === 'reviews'
-                ? 'bg-accent-blue text-white shadow-sm'
-                : 'text-gray-500 hover:text-gray-900'
+                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/25'
+                : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
             }`}
           >
             Ratings &amp; Reviews ({reviewCount})
@@ -631,16 +631,16 @@ export default function ProductDetailClient({
         {activeTab === 'specs' && (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs sm:text-sm">
-              <tbody className="divide-y divide-surface-muted">
+              <tbody className="divide-y divide-white/[0.08]">
                 {product.brand && (
                   <tr>
-                    <td className="py-3 px-4 font-bold text-gray-600 w-1/3 sm:w-1/4">Brand</td>
-                    <td className="py-3 px-4 text-gray-900">{product.brand.name}</td>
+                    <td className="py-3 px-4 font-bold text-slate-400 w-1/3 sm:w-1/4">Brand</td>
+                    <td className="py-3 px-4 text-white font-medium">{product.brand.name}</td>
                   </tr>
                 )}
                 <tr>
-                  <td className="py-3 px-4 font-bold text-gray-600">Condition</td>
-                  <td className="py-3 px-4 text-gray-900">{product.condition}</td>
+                  <td className="py-3 px-4 font-bold text-slate-400">Condition</td>
+                  <td className="py-3 px-4 text-emerald-400 font-bold">Brand New</td>
                 </tr>
                 {Object.entries(specs).map(([key, value]) => {
                   if (value === undefined || value === null || value === '' || typeof value === 'object') {
@@ -652,8 +652,8 @@ export default function ProductDetailClient({
 
                   return (
                     <tr key={key}>
-                      <td className="py-3 px-4 font-bold text-gray-600">{label}</td>
-                      <td className="py-3 px-4 text-gray-900">
+                      <td className="py-3 px-4 font-bold text-slate-400">{label}</td>
+                      <td className="py-3 px-4 text-slate-100 font-medium">
                         {typeof value === 'boolean' ? (value ? 'Yes' : 'No') : String(value)}
                       </td>
                     </tr>
@@ -666,9 +666,9 @@ export default function ProductDetailClient({
 
         {/* Description Tab Content */}
         {activeTab === 'desc' && (
-          <div className="prose prose-sm max-w-none text-gray-700 leading-relaxed space-y-4">
+          <div className="prose prose-invert prose-sm max-w-none text-slate-300 leading-relaxed space-y-4">
             {product.description ? (
-              <div className="whitespace-pre-line text-sm">{product.description}</div>
+              <div className="whitespace-pre-line text-sm text-slate-200">{product.description}</div>
             ) : (
               <p>{product.shortDescription || 'No additional description provided.'}</p>
             )}
@@ -677,15 +677,15 @@ export default function ProductDetailClient({
 
         {/* Warranty Tab Content */}
         {activeTab === 'warranty' && (
-          <div className="space-y-4 text-xs sm:text-sm text-gray-700 leading-relaxed">
-            <h3 className="font-bold text-base text-gray-900">Checking Warranty &amp; Hardware Assurance</h3>
+          <div className="space-y-4 text-xs sm:text-sm text-slate-300 leading-relaxed">
+            <h3 className="font-bold text-base text-white">Checking Warranty &amp; Hardware Assurance</h3>
             <p>
               {product.warrantyInfo ||
                 'Every laptop comes with our standard 7-day checking warranty covering hardware functionality, battery, screen, keyboard, and ports.'}
             </p>
-            <div className="p-4 rounded-xl bg-surface-cream border border-surface-muted text-xs space-y-1">
-              <p className="font-bold text-gray-900">Checking Warranty Terms:</p>
-              <ul className="list-disc list-inside space-y-0.5 text-gray-600">
+            <div className="p-4 rounded-xl bg-[#090D17] border border-white/[0.08] text-xs space-y-1.5">
+              <p className="font-bold text-amber-400">Checking Warranty Terms:</p>
+              <ul className="list-disc list-inside space-y-1 text-slate-300">
                 <li>Warranty begins from date of parcel delivery by courier.</li>
                 <li>Physical damage, liquid spills, or tampering void checking warranty.</li>
                 <li>In case of any hardware issue, contact our WhatsApp support within 7 days.</li>
@@ -698,9 +698,9 @@ export default function ProductDetailClient({
         {activeTab === 'reviews' && (
           <div className="space-y-8">
             {/* Rating Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 rounded-2xl bg-surface-cream border border-surface-muted items-center">
-              <div className="text-center md:border-r border-surface-muted pr-0 md:pr-6 space-y-2">
-                <span className="text-4xl sm:text-5xl font-black text-gray-900 block font-mono">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 rounded-2xl bg-[#090D17] border border-white/[0.08] items-center">
+              <div className="text-center md:border-r border-white/[0.08] pr-0 md:pr-6 space-y-2">
+                <span className="text-4xl sm:text-5xl font-black text-white block font-mono text-gradient-gold">
                   {avgRating ? avgRating.toFixed(1) : '0.0'}
                 </span>
                 <div className="flex items-center justify-center gap-1 text-amber-400">
@@ -708,12 +708,12 @@ export default function ProductDetailClient({
                     <Star
                       key={s}
                       className={`w-4 h-4 ${
-                        avgRating && s <= Math.round(avgRating) ? 'fill-current' : 'text-gray-300'
+                        avgRating && s <= Math.round(avgRating) ? 'fill-current' : 'text-slate-600'
                       }`}
                     />
                   ))}
                 </div>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-slate-400">
                   Based on {reviewCount} {reviewCount === 1 ? 'review' : 'reviews'}
                 </p>
               </div>
@@ -725,17 +725,17 @@ export default function ProductDetailClient({
                   const pct = reviewCount > 0 ? (countForStar / reviewCount) * 100 : 0;
                   return (
                     <div key={stars} className="flex items-center gap-2">
-                      <span className="w-12 text-gray-600 font-semibold flex items-center gap-1">
+                      <span className="w-12 text-slate-300 font-semibold flex items-center gap-1">
                         <span>{stars}</span>
                         <Star className="w-3 h-3 text-amber-400 fill-current" />
                       </span>
-                      <div className="flex-1 h-2 rounded-full bg-gray-200 overflow-hidden">
+                      <div className="flex-1 h-2 rounded-full bg-slate-800 overflow-hidden">
                         <div
-                          className="h-full bg-accent-blue rounded-full transition-all duration-300"
+                          className="h-full bg-amber-500 rounded-full transition-all duration-300"
                           style={{ width: `${pct}%` }}
                         />
                       </div>
-                      <span className="w-8 text-right text-gray-400 font-mono">{countForStar}</span>
+                      <span className="w-8 text-right text-slate-400 font-mono">{countForStar}</span>
                     </div>
                   );
                 })}
@@ -746,13 +746,13 @@ export default function ProductDetailClient({
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               {/* Existing Reviews Column */}
               <div className="lg:col-span-7 space-y-4">
-                <h3 className="font-bold text-base text-gray-900 border-b pb-2">
+                <h3 className="font-bold text-base text-white border-b border-white/[0.08] pb-2">
                   Customer Feedback ({reviewCount})
                 </h3>
 
                 {reviews.length === 0 ? (
-                  <div className="p-8 text-center border-2 border-dashed rounded-2xl bg-surface-cream text-gray-500 space-y-1">
-                    <p className="font-bold text-gray-800 text-sm">No reviews yet for this product</p>
+                  <div className="p-8 text-center border-2 border-dashed border-white/[0.08] rounded-2xl bg-[#090D17] text-slate-400 space-y-1">
+                    <p className="font-bold text-white text-sm">No reviews yet for this product</p>
                     <p className="text-xs">Have you tested this device? Share your thoughts below!</p>
                   </div>
                 ) : (
@@ -760,24 +760,24 @@ export default function ProductDetailClient({
                     {reviews.map((r) => (
                       <div
                         key={r.id}
-                        className="p-4 rounded-2xl border border-surface-muted bg-surface-cream/50 space-y-2"
+                        className="p-4 rounded-2xl border border-white/[0.08] bg-[#090D17] space-y-2"
                       >
                         <div className="flex items-center justify-between text-xs">
                           <div className="flex items-center gap-2">
-                            <span className="font-bold text-gray-900">{r.authorName}</span>
+                            <span className="font-bold text-white">{r.authorName}</span>
                             {r.isVerified && (
-                              <span className="inline-flex items-center gap-0.5 text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded font-semibold">
+                              <span className="inline-flex items-center gap-0.5 text-[10px] text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold">
                                 <CheckCircle2 className="w-3 h-3" />
                                 <span>Verified Buyer</span>
                               </span>
                             )}
                             {r.isDemo && (
-                              <span className="inline-flex items-center text-[9px] uppercase tracking-wider text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded font-bold">
+                              <span className="inline-flex items-center text-[9px] uppercase tracking-wider text-amber-400 bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 rounded-full font-bold">
                                 Sample Review
                               </span>
                             )}
                           </div>
-                          <span className="text-[11px] text-gray-400">
+                          <span className="text-[11px] text-slate-400">
                             {new Date(r.createdAt).toLocaleDateString('en-PK', {
                               year: 'numeric',
                               month: 'short',
@@ -791,14 +791,14 @@ export default function ProductDetailClient({
                             <Star
                               key={s}
                               className={`w-3.5 h-3.5 ${
-                                s <= r.rating ? 'fill-current' : 'text-gray-300'
+                                s <= r.rating ? 'fill-current' : 'text-slate-600'
                               }`}
                             />
                           ))}
                         </div>
 
-                        {r.title && <h4 className="font-bold text-xs text-gray-900">{r.title}</h4>}
-                        <p className="text-xs text-gray-700 leading-relaxed whitespace-pre-line">
+                        {r.title && <h4 className="font-bold text-xs text-white">{r.title}</h4>}
+                        <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-line">
                           {r.comment}
                         </p>
                       </div>
@@ -808,10 +808,10 @@ export default function ProductDetailClient({
               </div>
 
               {/* Submit Review Column */}
-              <div className="lg:col-span-5 p-6 rounded-2xl bg-white border border-surface-muted shadow-sm space-y-4">
+              <div className="lg:col-span-5 p-6 rounded-2xl bg-[#090D17] border border-white/[0.08] shadow-2xl space-y-4">
                 <div>
-                  <h3 className="font-bold text-base text-gray-900">Leave a Review</h3>
-                  <p className="text-xs text-gray-500 mt-0.5">
+                  <h3 className="font-bold text-base text-white">Leave a Review</h3>
+                  <p className="text-xs text-slate-400 mt-0.5">
                     Your feedback helps others make informed choices.
                   </p>
                 </div>
@@ -819,7 +819,7 @@ export default function ProductDetailClient({
                 <form onSubmit={handleReviewSubmit} className="space-y-4 text-xs">
                   {/* Star Selector */}
                   <div>
-                    <label className="block font-bold text-gray-700 mb-1">Your Rating *</label>
+                    <label className="block font-bold text-slate-300 mb-1">Your Rating *</label>
                     <div className="flex items-center gap-1.5">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
@@ -830,12 +830,12 @@ export default function ProductDetailClient({
                         >
                           <Star
                             className={`w-5 h-5 ${
-                              star <= reviewRating ? 'fill-current' : 'text-gray-300'
+                              star <= reviewRating ? 'fill-current' : 'text-slate-600'
                             }`}
                           />
                         </button>
                       ))}
-                      <span className="ml-2 font-bold text-gray-800 text-xs font-mono">
+                      <span className="ml-2 font-bold text-amber-400 text-xs font-mono">
                         {reviewRating} of 5 Stars
                       </span>
                     </div>
@@ -843,51 +843,49 @@ export default function ProductDetailClient({
 
                   {/* Name */}
                   <div>
-                    <label className="block font-bold text-gray-700 mb-1">Your Name *</label>
+                    <label className="block font-bold text-slate-300 mb-1">Your Name *</label>
                     <input
                       type="text"
                       required
                       placeholder="e.g. Usman Ali"
                       value={reviewAuthor}
                       onChange={(e) => setReviewAuthor(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl border border-gray-300 bg-white text-gray-900 focus:outline-none focus:border-accent-blue"
+                      className="w-full px-3 py-2 rounded-xl border border-white/[0.08] bg-[#07090E] text-white focus:outline-none focus:border-amber-400"
                     />
                   </div>
 
                   {/* Title */}
                   <div>
-                    <label className="block font-bold text-gray-700 mb-1">Headline (Optional)</label>
+                    <label className="block font-bold text-slate-300 mb-1">Headline (Optional)</label>
                     <input
                       type="text"
                       placeholder="e.g. Excellent battery life & speed"
                       value={reviewTitle}
                       onChange={(e) => setReviewTitle(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl border border-gray-300 bg-white text-gray-900 focus:outline-none focus:border-accent-blue"
+                      className="w-full px-3 py-2 rounded-xl border border-white/[0.08] bg-[#07090E] text-white focus:outline-none focus:border-amber-400"
                     />
                   </div>
 
                   {/* Comment */}
                   <div>
-                    <label className="block font-bold text-gray-700 mb-1">Your Review *</label>
+                    <label className="block font-bold text-slate-300 mb-1">Your Review *</label>
                     <textarea
                       required
                       rows={3}
                       placeholder="Describe the build quality, display clarity, keyboard, performance..."
                       value={reviewComment}
                       onChange={(e) => setReviewComment(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl border border-gray-300 bg-white text-gray-900 focus:outline-none focus:border-accent-blue"
+                      className="w-full px-3 py-2 rounded-xl border border-white/[0.08] bg-[#07090E] text-white focus:outline-none focus:border-amber-400"
                     />
                   </div>
 
-                  <Button
+                  <button
                     type="submit"
-                    variant="primary"
-                    size="md"
-                    isLoading={isSubmittingReview}
-                    className="w-full"
+                    disabled={isSubmittingReview}
+                    className="w-full py-3 px-4 rounded-xl font-black text-xs text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-500 shadow-lg shadow-amber-500/25 active:scale-95 transition-all"
                   >
-                    Submit Review
-                  </Button>
+                    {isSubmittingReview ? 'Submitting...' : 'Submit Review'}
+                  </button>
                 </form>
               </div>
             </div>

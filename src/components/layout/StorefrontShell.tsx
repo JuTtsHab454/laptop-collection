@@ -18,7 +18,7 @@ export const StorefrontShell: React.FC<{ children: React.ReactNode }> = ({ child
   const call = process.env.NEXT_PUBLIC_CALL_NUMBER || '923134951239';
 
   return (
-    <div className="flex flex-col min-h-screen bg-surface-cream text-gray-900 selection:bg-accent-blue selection:text-white">
+    <div className="flex flex-col min-h-screen bg-brand-dark text-slate-100 selection:bg-accent-gold selection:text-brand-dark">
       <Header />
       <main className="flex-1 pb-16">{children}</main>
       <Footer />

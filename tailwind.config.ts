@@ -12,34 +12,59 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         brand: {
-          navy: '#0F1B2D',       // Primary dark background
-          charcoal: '#1A2332',   // Card backgrounds
-          slate: '#243447',      // Elevated surfaces
-          steel: '#2D3F52',      // Borders, dividers
+          dark: '#07090E',        // Deepest Obsidian Velvet
+          navy: '#0A0D15',        // Primary luxury dark
+          charcoal: '#0F1420',    // Card glassy surfaces
+          slate: '#161D2E',       // Elevated interactive surfaces
+          steel: '#222B40',       // Metallic borders & hairline dividers
+          accent: '#F59E0B',      // Warm flagship gold
         },
         accent: {
-          blue: '#3B82F6',       // Primary accent (electric blue)
-          'blue-light': '#60A5FA',
-          'blue-dark': '#2563EB',
-          silver: '#94A3B8',     // Secondary accent
-          gold: '#F59E0B',       // Sale/discount badges
+          // Re-mapped from blue to Radiant Sunset Amber & Champagne Gold for ultra-premium luxury
+          blue: '#F59E0B',        // Primary radiant gold accent
+          'blue-light': '#FBBF24',
+          'blue-dark': '#D97706',
+          gold: '#F59E0B',        // Premium gold badges
+          amber: '#F59E0B',
+          emerald: '#10B981',     // Cyber emerald for in-stock & verified
+          violet: '#8B5CF6',      // Ambient futuristic glow
+          silver: '#94A3B8',      // Platinum / Titanium typography
         },
         surface: {
-          white: '#FFFFFF',
-          cream: '#F8FAFC',      // Light page backgrounds
-          light: '#F1F5F9',      // Card backgrounds (light mode sections)
-          muted: '#E2E8F0',      // Borders in light sections
+          white: '#0F1420',       // Converted to sleek dark surface
+          cream: '#07090E',       // Deep obsidian canvas
+          light: '#131929',       // Elevated dark card background
+          muted: '#1F293D',       // Sleek metallic border
         },
         status: {
           success: '#10B981',
           warning: '#F59E0B',
           error: '#EF4444',
-          info: '#3B82F6',
+          info: '#F59E0B',
         },
       },
       fontFamily: {
         sans: ['var(--font-inter)', 'sans-serif'],
         mono: ['var(--font-jetbrains)', 'monospace'],
+      },
+      animation: {
+        'glow-pulse': 'glowPulse 3s ease-in-out infinite',
+        'shimmer': 'shimmer 2.5s infinite linear',
+        'float-slow': 'floatSlow 4s ease-in-out infinite',
+      },
+      keyframes: {
+        glowPulse: {
+          '0%, 100%': { opacity: '0.4', transform: 'scale(1)' },
+          '50%': { opacity: '0.8', transform: 'scale(1.05)' },
+        },
+        shimmer: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
+        floatSlow: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-6px)' },
+        },
       },
     },
   },

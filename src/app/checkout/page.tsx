@@ -32,7 +32,7 @@ export default function CheckoutPage() {
   }, []);
 
   if (!mounted) {
-    return <div className="p-16 text-center text-sm text-gray-500">Loading checkout...</div>;
+    return <div className="p-16 text-center text-sm text-slate-400">Loading checkout...</div>;
   }
 
   if (items.length === 0) {
@@ -63,20 +63,8 @@ export default function CheckoutPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!customerName.trim() || customerName.length < 2) {
-      toast.error('Please enter your full name.');
-      return;
-    }
-
-    const cleanPhone = customerPhone.replace(/[\s-]/g, '');
-    const phoneRegex = /^(03|\+923|923)\d{9}$/;
-    if (!phoneRegex.test(cleanPhone)) {
-      toast.error('Please enter a valid Pakistani mobile number (e.g. 03134951239).');
-      return;
-    }
-
-    if (!customerAddress.trim() || customerAddress.length < 10) {
-      toast.error('Please enter a complete street delivery address (at least 10 characters).');
+    if (!customerName.trim() || !customerPhone.trim() || !customerAddress.trim()) {
+      toast.error('Please complete all required fields.');
       return;
     }
 
@@ -85,15 +73,20 @@ export default function CheckoutPage() {
     try {
       const payload = {
         customerName: customerName.trim(),
-        customerPhone: cleanPhone,
+        customerPhone: customerPhone.trim(),
         customerCity,
         customerAddress: customerAddress.trim(),
-        deliveryNotes: deliveryNotes.trim() || null,
-        items: items.map((it) => ({
-          productId: it.productId,
-          quantity: it.quantity,
-          config: it.config,
+        notes: deliveryNotes.trim() || undefined,
+        items: items.map((i) => ({
+          productId: i.productId,
+          title: i.title,
+          unitPrice: i.unitPrice,
+          quantity: i.quantity,
+          configSummary: i.configSummary,
         })),
+        deliveryCharge,
+        discount: 0,
+        totalAmount,
       };
 
       const res = await fetch('/api/orders', {
@@ -102,42 +95,43 @@ export default function CheckoutPage() {
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
-        throw new Error(data.error || 'Failed to place order.');
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to place order');
       }
 
+      const data = await res.json();
+      toast.success('Order placed successfully! Redirecting...');
       clearCart();
-      toast.success('Order placed successfully!');
       router.push(`/order/${data.order.orderNumber}`);
     } catch (err: any) {
       console.error(err);
-      toast.error(err.message || 'Error creating order.');
+      toast.error(err.message || 'Something went wrong while placing your order.');
+    } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 text-slate-100">
       <div>
         <Link
           href="/cart"
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-accent-blue hover:underline mb-2"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 hover:underline mb-2"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Return to Cart</span>
         </Link>
-        <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">Checkout</h1>
-        <p className="text-xs text-gray-500 mt-1">Provide delivery details to confirm your order.</p>
+        <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">Checkout</h1>
+        <p className="text-xs text-slate-400 mt-1">Provide delivery details to confirm your order.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Form (7 cols) */}
-        <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-surface-muted shadow-sm space-y-6">
-          <div className="border-b border-surface-muted pb-3">
-            <h2 className="text-base font-bold text-gray-900">Delivery Information</h2>
-            <p className="text-xs text-gray-500">Where should we deliver your parcel?</p>
+        <div className="lg:col-span-7 bg-[#0E1322]/95 backdrop-blur-xl p-6 sm:p-8 rounded-3xl border border-white/[0.08] shadow-2xl space-y-6">
+          <div className="border-b border-white/[0.08] pb-3">
+            <h2 className="text-base font-bold text-white">Delivery Information</h2>
+            <p className="text-xs text-slate-400">Where should we deliver your parcel?</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -186,64 +180,64 @@ export default function CheckoutPage() {
               onChange={(e) => setDeliveryNotes(e.target.value)}
             />
 
-            <div className="pt-4 border-t border-surface-muted space-y-3">
-              <div className="p-4 rounded-2xl bg-surface-cream border border-surface-muted text-xs space-y-2">
-                <div className="flex items-center gap-2 font-bold text-gray-900">
-                  <CreditCard className="w-4 h-4 text-accent-blue" />
+            <div className="pt-4 border-t border-white/[0.08] space-y-3">
+              <div className="p-4 rounded-2xl bg-[#090D17] border border-white/[0.08] text-xs space-y-2">
+                <div className="flex items-center gap-2 font-bold text-amber-400">
+                  <CreditCard className="w-4 h-4 text-amber-400" />
                   <span>Payment Method: Full Advance Bank Transfer</span>
                 </div>
-                <p className="text-gray-600 leading-relaxed text-[11px]">
+                <p className="text-slate-300 leading-relaxed text-[11px]">
                   Official bank account details will be presented on the next confirmation screen. Transfer the order amount and send the slip screenshot to our WhatsApp to confirm dispatch.
                 </p>
               </div>
 
-              <Button
+              <button
                 type="submit"
-                variant="primary"
-                size="lg"
-                isLoading={isSubmitting}
-                className="w-full font-black text-base shadow-lg"
+                disabled={isSubmitting}
+                className="w-full py-4 px-6 rounded-xl font-black text-sm sm:text-base text-white bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 hover:from-amber-400 hover:to-orange-500 shadow-xl shadow-amber-500/30 transition-all flex items-center justify-center gap-2 border border-amber-300/30 active:scale-95 disabled:opacity-50"
               >
                 <Lock className="w-4 h-4 mr-2" />
-                Place Order (Rs {formatPKR(totalAmount)})
-              </Button>
+                <span>{isSubmitting ? 'Processing...' : `Place Order (Rs ${formatPKR(totalAmount)})`}</span>
+              </button>
             </div>
           </form>
         </div>
 
         {/* Right Summary (5 cols) */}
-        <div className="lg:col-span-5 bg-white p-6 sm:p-8 rounded-3xl border border-surface-muted shadow-sm space-y-5">
-          <h2 className="text-base font-bold text-gray-900 border-b border-surface-muted pb-3">
+        <div className="lg:col-span-5 bg-[#0E1322]/95 backdrop-blur-xl p-6 sm:p-8 rounded-3xl border border-white/[0.08] shadow-2xl space-y-5">
+          <h2 className="text-base font-bold text-white border-b border-white/[0.08] pb-3">
             Order Items ({items.length})
           </h2>
 
-          <div className="space-y-4 max-h-80 overflow-y-auto divide-y divide-surface-muted pr-1">
-            {items.map((it) => (
-              <div key={it.id} className="pt-3 first:pt-0 flex justify-between gap-3 text-xs">
+          <div className="space-y-4 max-h-80 overflow-y-auto divide-y divide-white/[0.08] pr-1">
+            {items.map((item) => (
+              <div key={item.id} className="pt-3 first:pt-0 flex items-center justify-between text-xs">
                 <div>
-                  <p className="font-bold text-gray-900 line-clamp-1">{it.title}</p>
-                  <p className="text-gray-500 text-[11px] mt-0.5">{it.configSummary}</p>
-                  <span className="text-gray-400 text-[11px]">Qty: {it.quantity}</span>
+                  <h4 className="font-bold text-white line-clamp-1">{item.title}</h4>
+                  {item.configSummary && <p className="text-[11px] text-slate-400">{item.configSummary}</p>}
+                  <span className="text-[11px] text-slate-400 font-mono">Qty: {item.quantity}</span>
                 </div>
-                <div className="font-mono font-bold text-gray-900 whitespace-nowrap">
-                  Rs {formatPKR(it.unitPrice * it.quantity)}
+                <div className="font-mono font-bold text-amber-400 ml-3">
+                  Rs {formatPKR(item.unitPrice * item.quantity)}
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="pt-4 border-t border-surface-muted space-y-2 text-xs text-gray-600">
+          <div className="pt-4 border-t border-white/[0.08] space-y-2 text-xs text-slate-300">
             <div className="flex justify-between">
               <span>Subtotal</span>
-              <span className="font-mono font-bold text-gray-900">Rs {formatPKR(subtotal)}</span>
+              <span className="font-mono font-bold text-white">Rs {formatPKR(subtotal)}</span>
             </div>
             <div className="flex justify-between">
-              <span>Delivery Charge</span>
-              <span className="font-bold text-emerald-600">FREE</span>
+              <span>Nationwide Courier Delivery</span>
+              <span className="font-bold text-emerald-400">FREE</span>
             </div>
-            <div className="pt-3 border-t border-surface-muted flex justify-between text-base font-black text-gray-900">
+            <div className="pt-3 border-t border-white/[0.08] flex justify-between text-base font-black text-white">
               <span>Total Payable</span>
-              <span className="font-mono text-accent-blue">Rs {formatPKR(totalAmount)}</span>
+              <span className="font-mono text-amber-400 drop-shadow-[0_0_10px_rgba(245,158,11,0.25)]">
+                Rs {formatPKR(totalAmount)}
+              </span>
             </div>
           </div>
         </div>

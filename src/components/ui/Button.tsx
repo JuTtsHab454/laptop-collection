@@ -20,25 +20,25 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.98]';
+      'inline-flex items-center justify-center font-bold rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#07090E] disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.98]';
 
     const variants = {
       primary:
-        'bg-accent-blue text-white hover:bg-accent-blue-dark focus:ring-accent-blue shadow-sm shadow-accent-blue/30',
+        'bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 hover:from-amber-400 hover:to-orange-500 text-white focus:ring-amber-500 shadow-lg shadow-amber-500/25 border border-amber-300/30',
       secondary:
-        'bg-brand-slate text-white hover:bg-brand-steel focus:ring-brand-slate',
+        'bg-[#161D2E] text-white hover:bg-[#1E273D] border border-white/[0.08] focus:ring-slate-500 shadow-md',
       outline:
-        'border border-gray-300 bg-white text-gray-900 hover:bg-gray-100 hover:text-black focus:ring-accent-blue shadow-sm',
+        'border border-white/[0.1] bg-white/[0.03] text-slate-200 hover:bg-white/[0.08] hover:border-amber-400/50 hover:text-white focus:ring-amber-500 shadow-sm',
       ghost:
-        'text-gray-700 hover:bg-gray-100 hover:text-black focus:ring-accent-blue',
+        'text-slate-300 hover:bg-white/[0.06] hover:text-white focus:ring-amber-500',
       danger:
-        'bg-status-error text-white hover:bg-red-600 focus:ring-status-error shadow-sm',
+        'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 shadow-md shadow-red-500/20',
     };
 
     const sizes = {
-      sm: 'text-xs px-3 py-1.5 gap-1.5',
-      md: 'text-sm px-4 py-2.5 gap-2',
-      lg: 'text-base px-6 py-3.5 gap-2.5 font-semibold',
+      sm: 'text-xs px-3.5 py-1.5 gap-1.5',
+      md: 'text-xs sm:text-sm px-4 py-2.5 gap-2',
+      lg: 'text-sm sm:text-base px-6 py-3.5 gap-2.5 font-black',
     };
 
     return (
@@ -77,4 +77,5 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 );
 
 Button.displayName = 'Button';
+
 export default Button;
