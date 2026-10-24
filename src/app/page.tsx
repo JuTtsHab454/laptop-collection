@@ -25,7 +25,7 @@ import { formatPKR } from '@/components/ui/PriceDisplay';
 import NewArrivalsCarousel from '@/components/home/NewArrivalsCarousel';
 import { INITIAL_PRODUCTS, INITIAL_CATEGORIES } from '@/data/catalog';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 function formatProduct(p: any): ProductCardData {
   const revs = p.reviews || [];
