@@ -313,8 +313,14 @@ export default function ProductForm({
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || 'Failed to save product');
+        const errorData = await res.json().catch(() => ({}));
+        let errMsg = 'Failed to save product';
+        if (typeof errorData.error === 'string') {
+          errMsg = errorData.error;
+        } else if (errorData.error && typeof errorData.error === 'object') {
+          errMsg = JSON.stringify(errorData.error);
+        }
+        throw new Error(errMsg);
       }
 
       toast.success(

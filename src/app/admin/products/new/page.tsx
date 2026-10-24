@@ -10,7 +10,7 @@ export default async function NewProductPage() {
   let brands: any[] = [];
 
   try {
-    const results = await Promise.all([
+    let results = await Promise.all([
       prisma.category.findMany({
         where: { isActive: true },
         orderBy: { sortOrder: 'asc' },
@@ -22,8 +22,34 @@ export default async function NewProductPage() {
         select: { id: true, name: true, slug: true },
       }),
     ]);
+
     categories = results[0];
     brands = results[1];
+
+    if (!categories || categories.length === 0 || !brands || brands.length === 0) {
+      console.log('[NEW PRODUCT PAGE] Empty categories/brands. Syncing catalog to database...');
+      try {
+        const { syncCatalogToDatabase } = await import('@/lib/syncCatalog');
+        await syncCatalogToDatabase();
+
+        const refreshed = await Promise.all([
+          prisma.category.findMany({
+            where: { isActive: true },
+            orderBy: { sortOrder: 'asc' },
+            select: { id: true, name: true, slug: true },
+          }),
+          prisma.brand.findMany({
+            where: { isActive: true },
+            orderBy: { sortOrder: 'asc' },
+            select: { id: true, name: true, slug: true },
+          }),
+        ]);
+        categories = refreshed[0];
+        brands = refreshed[1];
+      } catch (syncErr) {
+        console.warn('[NEW PRODUCT PAGE] Auto-sync warning:', syncErr);
+      }
+    }
   } catch (err) {
     console.warn('[NEW PRODUCT PAGE] DB fetch error, using fallback catalog categories/brands:', err);
   }

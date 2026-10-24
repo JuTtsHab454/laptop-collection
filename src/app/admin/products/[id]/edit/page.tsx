@@ -12,14 +12,43 @@ export default async function EditProductPage({ params }: { params: { id: string
   let brands: any[] = [];
 
   try {
-    const results = await Promise.all([
-      prisma.product.findUnique({
-        where: { id: params.id },
+    let productResult = await prisma.product.findUnique({
+      where: { id: params.id },
+      include: {
+        images: { orderBy: { sortOrder: 'asc' } },
+        variants: { orderBy: { sortOrder: 'asc' } },
+      },
+    });
+
+    if (!productResult) {
+      productResult = await prisma.product.findUnique({
+        where: { slug: params.id },
         include: {
           images: { orderBy: { sortOrder: 'asc' } },
           variants: { orderBy: { sortOrder: 'asc' } },
         },
-      }),
+      });
+    }
+
+    if (!productResult) {
+      const fallback = INITIAL_PRODUCTS.find((p) => p.id === params.id || p.slug === params.id);
+      if (fallback) {
+        try {
+          const { syncCatalogToDatabase } = await import('@/lib/syncCatalog');
+          await syncCatalogToDatabase();
+          productResult = await prisma.product.findUnique({
+            where: { slug: fallback.slug },
+            include: {
+              images: { orderBy: { sortOrder: 'asc' } },
+              variants: { orderBy: { sortOrder: 'asc' } },
+            },
+          });
+        } catch (e) {}
+      }
+    }
+
+    const results = await Promise.all([
+      Promise.resolve(productResult),
       prisma.category.findMany({
         where: { isActive: true },
         orderBy: { sortOrder: 'asc' },

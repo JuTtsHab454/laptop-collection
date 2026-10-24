@@ -30,6 +30,17 @@ export default async function AdminDashboardPage() {
   let publishedPosts = 0;
 
   try {
+    let initialCount = await prisma.product.count();
+    if (initialCount === 0) {
+      console.log('[ADMIN] Empty product table detected. Idempotently syncing catalog to database...');
+      try {
+        const { syncCatalogToDatabase } = await import('@/lib/syncCatalog');
+        await syncCatalogToDatabase();
+      } catch (syncErr) {
+        console.warn('[ADMIN] Auto-sync warning:', syncErr);
+      }
+    }
+
     const results = await Promise.all([
       prisma.product.count(),
       prisma.product.count({ where: { status: 'PUBLISHED' } }),

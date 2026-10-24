@@ -35,6 +35,17 @@ export default async function AdminProductsPage({
   let brands: any[] = [];
 
   try {
+    let initialCount = await prisma.product.count({ where });
+    if (initialCount === 0 && !search && !categoryId && !status) {
+      console.log('[ADMIN PRODUCTS] Empty database detected. Syncing catalog to database...');
+      try {
+        const { syncCatalogToDatabase } = await import('@/lib/syncCatalog');
+        await syncCatalogToDatabase();
+      } catch (syncErr) {
+        console.warn('[ADMIN PRODUCTS] Auto-sync warning:', syncErr);
+      }
+    }
+
     const results = await Promise.all([
       prisma.product.count({ where }),
       prisma.product.findMany({

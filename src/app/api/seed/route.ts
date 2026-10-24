@@ -1,14 +1,17 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import * as bcrypt from 'bcryptjs';
-import { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_BRANDS } from '@/data/catalog';
 import { auth } from '@/lib/auth';
+import { syncCatalogToDatabase } from '@/lib/syncCatalog';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   return NextResponse.json(
-    { error: 'Public GET method disabled for security. Database seeding must be executed via CLI seed script or authenticated admin POST.' },
+    {
+      error:
+        'Public GET method disabled for security. Database seeding must be executed via CLI seed script or authenticated admin POST.',
+    },
     { status: 403 }
   );
 }
@@ -21,7 +24,8 @@ export async function POST(req: Request) {
     const secretKey = process.env.NEXTAUTH_SECRET || process.env.SEED_SECRET;
 
     const isAdminSession = session?.user && (session.user as any).role === 'admin';
-    const isSecretAuthorized = secretKey && authHeader && authHeader.replace('Bearer ', '') === secretKey;
+    const isSecretAuthorized =
+      secretKey && authHeader && authHeader.replace('Bearer ', '') === secretKey;
 
     if (!isAdminSession && !isSecretAuthorized) {
       return NextResponse.json(
@@ -30,9 +34,9 @@ export async function POST(req: Request) {
       );
     }
 
-    console.log('Seeding database via authenticated Admin route...');
+    console.log('[SEED] Running authenticated database seed...');
 
-    // 1. Admin
+    // 1. Admin account
     const hashedPassword = await bcrypt.hash('Admin@LC2024!', 12);
     await prisma.admin.upsert({
       where: { email: 'admin@laptopcollection.pk' },
@@ -44,48 +48,16 @@ export async function POST(req: Request) {
       },
     });
 
-    // 2. Categories
-    const catMap = new Map<string, string>();
-    for (let index = 0; index < INITIAL_CATEGORIES.length; index++) {
-      const cat = INITIAL_CATEGORIES[index];
-      const created = await prisma.category.upsert({
-        where: { slug: cat.slug },
-        update: { name: cat.name },
-        create: {
-          name: cat.name,
-          slug: cat.slug,
-          description: `High-quality ${cat.name} with checking warranty in Pakistan`,
-          sortOrder: index + 1,
-          isFeatured: true,
-        },
-      });
-      catMap.set(cat.slug, created.id);
-    }
-
-    // 3. Brands
-    const brandMap = new Map<string, string>();
-    for (let index = 0; index < INITIAL_BRANDS.length; index++) {
-      const b = INITIAL_BRANDS[index];
-      const created = await prisma.brand.upsert({
-        where: { slug: b.slug },
-        update: { name: b.name },
-        create: {
-          name: b.name,
-          slug: b.slug,
-          sortOrder: index + 1,
-          isActive: true,
-        },
-      });
-      brandMap.set(b.name.toLowerCase(), created.id);
-      brandMap.set(b.slug.toLowerCase(), created.id);
-    }
-
-    // 4. Site Settings
+    // 2. Site Settings
     const settings = [
       { key: 'whatsapp_number', value: '923134951239' },
       { key: 'phone_number', value: '+92 313 4951239' },
       { key: 'sales_email', value: 'sales@laptopcollection.pk' },
-      { key: 'store_address', value: 'Shop # 14-B, 2nd Floor, Hafeez Centre, Main Boulevard Gulberg III, Lahore, Pakistan' },
+      {
+        key: 'store_address',
+        value:
+          'Shop # 14-B, 2nd Floor, Hafeez Centre, Main Boulevard Gulberg III, Lahore, Pakistan',
+      },
       { key: 'operating_hours', value: 'Monday – Saturday: 11:00 AM – 9:00 PM' },
     ];
     for (const s of settings) {
@@ -96,7 +68,7 @@ export async function POST(req: Request) {
       });
     }
 
-    // 5. Branches
+    // 3. Branches
     const branches = [
       {
         name: 'Lahore Flagship Branch',
@@ -122,138 +94,18 @@ export async function POST(req: Request) {
       }
     }
 
-    // 6. Products
-    let seededCount = 0;
-    const conditionMap: Record<string, 'NEW' | 'USED' | 'REFURBISHED'> = {
-      BRAND_NEW: 'NEW',
-      NEW: 'NEW',
-      REFURBISHED: 'REFURBISHED',
-      OPEN_BOX: 'USED',
-      USED: 'USED',
-    };
-
-    for (const item of INITIAL_PRODUCTS) {
-      const catId = item.category?.slug ? catMap.get(item.category.slug) : undefined;
-      const brandId = item.brand?.name ? brandMap.get(item.brand.name.toLowerCase()) : undefined;
-      const productCondition = conditionMap[item.condition] || 'REFURBISHED';
-
-      const product = await prisma.product.upsert({
-        where: { slug: item.slug },
-        update: {
-          title: item.title,
-          basePrice: item.basePrice,
-          originalPrice: item.originalPrice,
-          stock: item.stock,
-          condition: productCondition,
-          isFeatured: item.isFeatured ?? false,
-          isOnSale: item.isOnSale ?? false,
-        },
-        create: {
-          title: item.title,
-          slug: item.slug,
-          sku: item.slug.toUpperCase(),
-          basePrice: item.basePrice,
-          originalPrice: item.originalPrice,
-          stock: item.stock,
-          condition: productCondition,
-          isFeatured: item.isFeatured ?? false,
-          isOnSale: item.isOnSale ?? false,
-          status: 'PUBLISHED',
-          shortDescription: item.shortDescription || item.title,
-          description: item.description || item.title,
-          warrantyInfo: item.warrantyInfo || '7-Day Checking Warranty & 1-Year Service Support',
-          hasChargerOption: !!item.hasChargerOption,
-          chargerDeduction: item.chargerDeduction || 2500,
-          hasBagOption: !!item.hasBagOption,
-          bagPrice: item.bagPrice || 3500,
-          colors: item.colors || ['Silver', 'Space Gray'],
-          specifications: (item.specifications || {}) as any,
-          categoryId: catId || '',
-          brandId: brandId || null,
-        },
-      });
-
-      // Images
-      if (item.images && item.images.length > 0) {
-        for (let idx = 0; idx < item.images.length; idx++) {
-          const img = item.images[idx];
-          const imgExists = await prisma.productImage.findFirst({
-            where: { productId: product.id, url: img.url },
-          });
-          if (!imgExists) {
-            await prisma.productImage.create({
-              data: {
-                productId: product.id,
-                url: img.url,
-                alt: img.alt || item.title,
-                isMain: idx === 0,
-                sortOrder: idx,
-              },
-            });
-          }
-        }
-      }
-
-      // Variants
-      if (item.variants && item.variants.length > 0) {
-        for (let vIdx = 0; vIdx < item.variants.length; vIdx++) {
-          const v = item.variants[vIdx];
-          const variantExists = await prisma.productVariant.findFirst({
-            where: { productId: product.id, label: v.label },
-          });
-          if (!variantExists) {
-            await prisma.productVariant.create({
-              data: {
-                productId: product.id,
-                variantType: v.variantType,
-                label: v.label,
-                priceAdjustment: v.priceAdjustment,
-                isDefault: v.isDefault,
-                sortOrder: vIdx,
-              },
-            });
-          }
-        }
-      }
-
-      // Reviews
-      if (item.reviewsList && item.reviewsList.length > 0) {
-        for (const r of item.reviewsList) {
-          const revExists = await prisma.review.findFirst({
-            where: { productId: product.id, authorName: r.authorName },
-          });
-          if (!revExists) {
-            await prisma.review.create({
-              data: {
-                productId: product.id,
-                authorName: r.authorName,
-                rating: r.rating,
-                title: r.title,
-                comment: r.comment,
-                isVerified: r.isVerified,
-                isApproved: true,
-                isDemo: true,
-              },
-            });
-          }
-        }
-      }
-
-      seededCount++;
-    }
+    // 4. Sync Categories, Brands, Products, Images, and Variants
+    const syncResult = await syncCatalogToDatabase();
 
     return NextResponse.json({
       success: true,
-      message: `Database seeded successfully with ${seededCount} products, categories, brands, settings, and branches.`,
-      seededCount,
+      message: 'Database seeded and synchronized successfully!',
+      stats: syncResult,
     });
-  } catch (err: any) {
-    console.error('API Seed Error:', err);
+  } catch (error: any) {
+    console.error('[SEED] Error during seeding:', error);
     return NextResponse.json(
-      {
-        success: false,
-        error: err.message || 'Failed to seed database',
-      },
+      { error: error.message || 'Database seeding failed.' },
       { status: 500 }
     );
   }
