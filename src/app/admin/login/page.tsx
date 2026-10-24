@@ -96,9 +96,27 @@ function LoginForm() {
         </Button>
       </form>
 
-      <div className="mt-6 pt-6 border-t border-brand-steel text-center text-xs text-accent-silver">
-        <p>Default credentials (initial setup):</p>
-        <p className="font-mono text-gray-300 mt-1 select-all">admin@laptopcollection.pk</p>
+      <div className="mt-6 pt-6 border-t border-brand-steel text-xs text-accent-silver space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="font-semibold text-gray-300">Authorized Credentials:</span>
+          <button
+            type="button"
+            onClick={() => {
+              setEmail('admin@laptopcollection.pk');
+              setPassword('Admin@LC2024!');
+            }}
+            className="text-[11px] font-bold text-accent-blue hover:underline"
+          >
+            Auto-fill Credentials
+          </button>
+        </div>
+        <div className="bg-brand-navy/60 p-2.5 rounded-lg border border-brand-steel font-mono text-[11px] space-y-1 text-left text-gray-300">
+          <div><strong className="text-gray-400">Email:</strong> admin@laptopcollection.pk</div>
+          <div><strong className="text-gray-400">Password:</strong> Admin@LC2024!</div>
+        </div>
+        <p className="text-[10px] text-gray-400 text-center">
+          Or use your registered admin email: <span className="text-gray-300">juttshab4512@gmail.com</span>
+        </p>
       </div>
     </div>
   );

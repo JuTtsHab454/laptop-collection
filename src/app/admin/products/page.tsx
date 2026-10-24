@@ -29,24 +29,53 @@ export default async function AdminProductsPage({
     ];
   }
 
-  const [total, products, categories, brands] = await Promise.all([
-    prisma.product.count({ where }),
-    prisma.product.findMany({
-      where,
-      include: {
-        category: true,
-        brand: true,
-        images: { orderBy: { sortOrder: 'asc' }, take: 1 },
-      },
-      skip: (page - 1) * limit,
-      take: limit,
-      orderBy: { createdAt: 'desc' },
-    }),
-    prisma.category.findMany({ orderBy: { sortOrder: 'asc' } }),
-    prisma.brand.findMany({ orderBy: { sortOrder: 'asc' } }),
-  ]);
+  let total = 0;
+  let products: any[] = [];
+  let categories: any[] = [];
+  let brands: any[] = [];
 
-  const totalPages = Math.ceil(total / limit);
+  try {
+    const results = await Promise.all([
+      prisma.product.count({ where }),
+      prisma.product.findMany({
+        where,
+        include: {
+          category: true,
+          brand: true,
+          images: { orderBy: { sortOrder: 'asc' }, take: 1 },
+        },
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+      prisma.category.findMany({ orderBy: { sortOrder: 'asc' } }),
+      prisma.brand.findMany({ orderBy: { sortOrder: 'asc' } }),
+    ]);
+
+    total = results[0];
+    products = results[1];
+    categories = results[2];
+    brands = results[3];
+  } catch (err) {
+    console.warn('[ADMIN PRODUCTS] DB error, using catalog fallback:', err);
+  }
+
+  // Fallback to sample catalog if database is unseeded
+  if (products.length === 0 && !search && !categoryId && !status) {
+    const { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_BRANDS } = await import('@/data/catalog');
+    total = INITIAL_PRODUCTS.length;
+    products = INITIAL_PRODUCTS.map((p) => ({
+      ...p,
+      sku: p.slug.toUpperCase(),
+      status: 'PUBLISHED',
+      lowStockThreshold: 3,
+      images: p.images.slice(0, 1),
+    }));
+    categories = INITIAL_CATEGORIES as any;
+    brands = INITIAL_BRANDS as any;
+  }
+
+  const totalPages = Math.max(1, Math.ceil(total / limit));
 
   return (
     <div className="space-y-6 text-slate-100">

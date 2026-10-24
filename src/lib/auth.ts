@@ -26,32 +26,71 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const { email, password } = parsedCredentials.data;
 
+        const normalizedEmail = email.toLowerCase().trim();
+
+        // 1. Attempt database authentication
         try {
           const admin = await prisma.admin.findUnique({
-            where: { email: email.toLowerCase().trim() },
+            where: { email: normalizedEmail },
           });
 
-          if (!admin) {
-            console.warn(`[AUTH] Failed login attempt for non-existent admin: ${email}`);
-            return null;
+          if (admin) {
+            const passwordsMatch = await bcrypt.compare(password, admin.hashedPassword);
+
+            if (passwordsMatch) {
+              return {
+                id: admin.id,
+                email: admin.email,
+                name: admin.name || 'Super Admin',
+              };
+            }
           }
+        } catch (error) {
+          console.warn('[AUTH] Database error or Admin table not found yet:', error);
+        }
 
-          const passwordsMatch = await bcrypt.compare(password, admin.hashedPassword);
+        // 2. Fallback / Bootstrap Admin:
+        // Ensures login always succeeds with master credentials, even if Neon DB tables are pending creation.
+        const validAdminEmails = [
+          'admin@laptopcollection.pk',
+          'juttshab4512@gmail.com',
+          process.env.ADMIN_EMAIL?.toLowerCase().trim(),
+        ].filter(Boolean) as string[];
 
-          if (!passwordsMatch) {
-            console.warn(`[AUTH] Invalid password attempt for admin: ${email}`);
-            return null;
+        const validAdminPasswords = [
+          'Admin@LC2024!',
+          process.env.ADMIN_PASSWORD,
+        ].filter(Boolean) as string[];
+
+        const isEmailMatch = validAdminEmails.includes(normalizedEmail);
+        const isPasswordMatch = validAdminPasswords.includes(password);
+
+        if (isEmailMatch && isPasswordMatch) {
+          // If database is reachable, attempt to persist this admin in background
+          try {
+            const hashedPassword = await bcrypt.hash(password, 12);
+            await prisma.admin.upsert({
+              where: { email: normalizedEmail },
+              update: {},
+              create: {
+                email: normalizedEmail,
+                name: normalizedEmail.includes('jutt') ? 'JuTtsHab Admin' : 'Super Admin',
+                hashedPassword,
+              },
+            });
+          } catch {
+            // Silently continue if table is not created yet
           }
 
           return {
-            id: admin.id,
-            email: admin.email,
-            name: admin.name || 'Admin',
+            id: 'admin-bootstrap-root',
+            email: normalizedEmail,
+            name: normalizedEmail.includes('jutt') ? 'JuTtsHab Admin' : 'Super Admin',
           };
-        } catch (error) {
-          console.error('[AUTH] Database error during authentication:', error);
-          return null;
         }
+
+        console.warn(`[AUTH] Invalid credentials for: ${normalizedEmail}`);
+        return null;
       },
     }),
   ],
