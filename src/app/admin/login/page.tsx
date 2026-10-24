@@ -36,9 +36,10 @@ function LoginForm() {
         setError('Invalid admin credentials. Please try again.');
         toast.error('Authentication failed.');
       } else {
-        toast.success('Logged in successfully!');
-        router.push(callbackUrl);
-        router.refresh();
+        toast.success('Logged in successfully! Redirecting...');
+        const target =
+          callbackUrl && !callbackUrl.includes('/admin/login') ? callbackUrl : '/admin';
+        window.location.href = target;
       }
     } catch (err) {
       console.error(err);

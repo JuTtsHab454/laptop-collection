@@ -2,32 +2,75 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import prisma from '@/lib/prisma';
 import ProductForm from '@/components/admin/ProductForm';
+import { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_BRANDS } from '@/data/catalog';
 
 export const dynamic = 'force-dynamic';
 
 export default async function EditProductPage({ params }: { params: { id: string } }) {
-  const [product, categories, brands] = await Promise.all([
-    prisma.product.findUnique({
-      where: { id: params.id },
-      include: {
-        images: { orderBy: { sortOrder: 'asc' } },
-        variants: { orderBy: { sortOrder: 'asc' } },
-      },
-    }),
-    prisma.category.findMany({
-      where: { isActive: true },
-      orderBy: { sortOrder: 'asc' },
-      select: { id: true, name: true, slug: true },
-    }),
-    prisma.brand.findMany({
-      where: { isActive: true },
-      orderBy: { sortOrder: 'asc' },
-      select: { id: true, name: true, slug: true },
-    }),
-  ]);
+  let product: any = null;
+  let categories: any[] = [];
+  let brands: any[] = [];
 
+  try {
+    const results = await Promise.all([
+      prisma.product.findUnique({
+        where: { id: params.id },
+        include: {
+          images: { orderBy: { sortOrder: 'asc' } },
+          variants: { orderBy: { sortOrder: 'asc' } },
+        },
+      }),
+      prisma.category.findMany({
+        where: { isActive: true },
+        orderBy: { sortOrder: 'asc' },
+        select: { id: true, name: true, slug: true },
+      }),
+      prisma.brand.findMany({
+        where: { isActive: true },
+        orderBy: { sortOrder: 'asc' },
+        select: { id: true, name: true, slug: true },
+      }),
+    ]);
+    product = results[0];
+    categories = results[1];
+    brands = results[2];
+  } catch (err) {
+    console.warn('[EDIT PRODUCT PAGE] DB fetch error, falling back to static catalog:', err);
+  }
+
+  // Fallback to static catalog item if database returned null or threw
   if (!product) {
-    notFound();
+    const fallback = INITIAL_PRODUCTS.find((p) => p.id === params.id || p.slug === params.id);
+    if (!fallback) {
+      notFound();
+    }
+    product = {
+      ...fallback,
+      brandId: fallback.brand?.name || '',
+      categoryId: fallback.category?.slug || '',
+      images: fallback.images.map((img, idx) => ({
+        id: `img-${idx}`,
+        url: img.url,
+        alt: img.alt || fallback.title,
+        isMain: idx === 0,
+        sortOrder: idx,
+      })),
+      variants: (fallback.variants || []).map((v, idx) => ({
+        variantType: v.variantType,
+        label: v.label,
+        priceAdjustment: v.priceAdjustment,
+        isDefault: v.isDefault,
+        stock: 5,
+        sortOrder: idx,
+      })),
+    };
+  }
+
+  if (!categories || categories.length === 0) {
+    categories = INITIAL_CATEGORIES;
+  }
+  if (!brands || brands.length === 0) {
+    brands = INITIAL_BRANDS;
   }
 
   const formattedProduct = {
@@ -35,14 +78,14 @@ export default async function EditProductPage({ params }: { params: { id: string
     brandId: product.brandId || '',
     specifications: (product.specifications || {}) as Record<string, any>,
     features: (product.features || {}) as Record<string, any>,
-    images: product.images.map((img) => ({
+    images: (product.images || []).map((img: any) => ({
       id: img.id,
       url: img.url,
       alt: img.alt || undefined,
       isMain: img.isMain,
       sortOrder: img.sortOrder,
     })),
-    variants: product.variants.map((v) => ({
+    variants: (product.variants || []).map((v: any) => ({
       variantType: v.variantType,
       label: v.label,
       priceAdjustment: v.priceAdjustment,

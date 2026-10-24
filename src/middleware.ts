@@ -1,14 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
+async function getAuthToken(req: NextRequest) {
+  const secret =
+    process.env.AUTH_SECRET ||
+    process.env.NEXTAUTH_SECRET ||
+    'laptop-collection-secret-key-32charsmin';
+
+  // 1. Try secure cookie first (Vercel production HTTPS)
+  try {
+    const tokenSecure = await getToken({ req, secret, secureCookie: true });
+    if (tokenSecure) return tokenSecure;
+  } catch (err) {}
+
+  // 2. Try standard cookie (localhost HTTP)
+  try {
+    const tokenStandard = await getToken({ req, secret, secureCookie: false });
+    if (tokenStandard) return tokenStandard;
+  } catch (err) {}
+
+  // 3. Fallback: try explicit cookie names in case salt/name differences exist
+  const candidateCookies = [
+    '__Secure-authjs.session-token',
+    'authjs.session-token',
+    '__Secure-next-auth.session-token',
+    'next-auth.session-token',
+  ];
+
+  for (const name of candidateCookies) {
+    if (req.cookies.has(name)) {
+      try {
+        const isSecure = name.startsWith('__Secure-');
+        const token = await getToken({ req, secret, cookieName: name, secureCookie: isSecure });
+        if (token) return token;
+      } catch (err) {}
+    }
+  }
+
+  return null;
+}
+
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  const token = await getToken({
-    req,
-    secret: process.env.NEXTAUTH_SECRET || 'laptop-collection-secret-key-32charsmin',
-  });
-
+  const token = await getAuthToken(req);
   const isAuthenticated = !!token;
   const isAdminRoute = pathname.startsWith('/admin');
   const isAdminLogin = pathname === '/admin/login';

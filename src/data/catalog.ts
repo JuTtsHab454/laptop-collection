@@ -95,7 +95,16 @@ export const INITIAL_PRODUCTS: CatalogProduct[] = [
       backlitKeyboard: true,
       fingerprint: true,
     },
-    images: [{ url: '/placeholder-laptop.svg', alt: 'HP EliteBook 840 G8' }],
+    images: [
+      {
+            'url': 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'HP EliteBook 840 G8 Front View'
+      },
+      {
+            'url': 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'HP EliteBook 840 G8 Keyboard and Display'
+      }
+],
     variants: [
       { variantType: 'ram', label: '16 GB DDR4 (Default)', priceAdjustment: 0, isDefault: true },
       { variantType: 'ram', label: '32 GB DDR4 Upgrade (+Rs 7,000)', priceAdjustment: 7000, isDefault: false },
@@ -159,7 +168,16 @@ export const INITIAL_PRODUCTS: CatalogProduct[] = [
       backlitKeyboard: true,
       fingerprint: true,
     },
-    images: [{ url: '/placeholder-laptop.svg', alt: 'Dell Latitude 7420' }],
+    images: [
+      {
+            'url': 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Dell Latitude 7420 Premium Business Laptop'
+      },
+      {
+            'url': 'https://images.unsplash.com/photo-1593642532400-2682810df593?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Dell Latitude 7420 Ultrabook Side Profile'
+      }
+],
     variants: [
       { variantType: 'ram', label: '16 GB DDR4 (Standard)', priceAdjustment: 0, isDefault: true },
       { variantType: 'ssd', label: '256 GB NVMe SSD (Default)', priceAdjustment: 0, isDefault: true },
@@ -221,7 +239,16 @@ export const INITIAL_PRODUCTS: CatalogProduct[] = [
       backlitKeyboard: true,
       fingerprint: true,
     },
-    images: [{ url: '/placeholder-laptop.svg', alt: 'Lenovo ThinkPad T14 Gen 2' }],
+    images: [
+      {
+            'url': 'https://images.unsplash.com/photo-1588702547919-26089e690ecc?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Lenovo ThinkPad T14 Gen 2 Laptop'
+      },
+      {
+            'url': 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Lenovo ThinkPad Keyboard & TrackPoint'
+      }
+],
     variants: [
       { variantType: 'ram', label: '16 GB DDR4 (Standard)', priceAdjustment: 0, isDefault: true },
       { variantType: 'ram', label: '32 GB DDR4 Upgrade (+Rs 7,500)', priceAdjustment: 7500, isDefault: false },
@@ -285,7 +312,16 @@ export const INITIAL_PRODUCTS: CatalogProduct[] = [
       backlitKeyboard: true,
       fingerprint: true,
     },
-    images: [{ url: '/placeholder-laptop.svg', alt: 'Apple MacBook Air M1' }],
+    images: [
+      {
+            'url': 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Apple MacBook Air M1 Space Gray'
+      },
+      {
+            'url': 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Apple MacBook Retina Display & Magic Keyboard'
+      }
+],
     variants: [],
     reviewsList: [
       {
@@ -343,7 +379,16 @@ export const INITIAL_PRODUCTS: CatalogProduct[] = [
       backlitKeyboard: false,
       fingerprint: true,
     },
-    images: [{ url: '/placeholder-laptop.svg', alt: 'HP ProBook 450 G8' }],
+    images: [
+      {
+            'url': 'https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'HP ProBook 450 G8 15.6 inch Business Laptop'
+      },
+      {
+            'url': 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'HP ProBook Clean Work Setup'
+      }
+],
     variants: [
       { variantType: 'ram', label: '8 GB DDR4 (Standard)', priceAdjustment: 0, isDefault: true },
       { variantType: 'ram', label: '16 GB DDR4 Upgrade (+Rs 4,000)', priceAdjustment: 4000, isDefault: false },
@@ -382,7 +427,16 @@ export const INITIAL_PRODUCTS: CatalogProduct[] = [
     shortDescription: 'Original Samsung PC4-25600 3200MHz DDR4 SODIMM notebook memory module.',
     description: 'Tested OEM Samsung 8GB DDR4 3200MHz SODIMM memory stick. Compatible with 8th to 12th Gen Intel and AMD Ryzen laptops.',
     specifications: { capacity: '8GB', type: 'DDR4', speed: '3200MHz', formFactor: 'SODIMM (260-Pin)' },
-    images: [{ url: '/placeholder-accessory.svg', alt: 'Samsung 8GB DDR4 RAM' }],
+    images: [
+      {
+            'url': 'https://images.unsplash.com/photo-1562976540-1502c2145186?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Samsung 8GB DDR4 3200MHz SODIMM Laptop RAM'
+      },
+      {
+            'url': 'https://images.unsplash.com/photo-1555617981-dac3880eac6e?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Samsung RAM Module Memory Chips'
+      }
+],
   },
   {
     id: 'prod-ram-2',
@@ -401,7 +455,16 @@ export const INITIAL_PRODUCTS: CatalogProduct[] = [
     shortDescription: 'High-density 16GB DDR4 3200MHz SODIMM module for gaming & video editing laptops.',
     description: 'Kingston 16GB DDR4 3200MHz laptop RAM module. Low 1.2V power consumption with lifetime warranty.',
     specifications: { capacity: '16GB', type: 'DDR4', speed: '3200MHz', formFactor: 'SODIMM (260-Pin)' },
-    images: [{ url: '/placeholder-accessory.svg', alt: 'Kingston 16GB DDR4 RAM' }],
+    images: [
+      {
+            'url': 'https://images.unsplash.com/photo-1544652478-6653e09f18a2?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Kingston ValueRAM 16GB DDR4 3200MHz Laptop RAM'
+      },
+      {
+            'url': 'https://images.unsplash.com/photo-1562976540-1502c2145186?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Kingston DDR4 Laptop Memory Stick'
+      }
+],
   },
   {
     id: 'prod-ram-3',
@@ -420,7 +483,16 @@ export const INITIAL_PRODUCTS: CatalogProduct[] = [
     shortDescription: 'Next-generation DDR5 memory offering 50% faster data rates than DDR4 for 12th/13th Gen laptops.',
     description: 'Crucial 16GB DDR5-4800 SODIMM with on-die ECC for enhanced stability at high speeds.',
     specifications: { capacity: '16GB', type: 'DDR5', speed: '4800MHz', formFactor: 'SODIMM (262-Pin)' },
-    images: [{ url: '/placeholder-accessory.svg', alt: 'Crucial 16GB DDR5 RAM' }],
+    images: [
+      {
+            'url': 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Crucial 16GB DDR5 4800MHz SODIMM Next-Gen Laptop Memory'
+      },
+      {
+            'url': 'https://images.unsplash.com/photo-1544652478-6653e09f18a2?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Crucial DDR5 Memory Circuit'
+      }
+],
   },
 
   // ─── SSD PRODUCTS ───
@@ -441,7 +513,16 @@ export const INITIAL_PRODUCTS: CatalogProduct[] = [
     shortDescription: 'Up to 3,100 MB/s read speeds powered by Samsung V-NAND technology and nickel-coated controller.',
     description: 'Upgrade your laptop with the Samsung 980 NVMe SSD. Drastically cuts boot times, game loading, and large file transfers.',
     specifications: { capacity: '500GB', interface: 'PCIe Gen 3.0 x4, NVMe 1.4', formFactor: 'M.2 2280', readSpeed: '3,100 MB/s', writeSpeed: '2,600 MB/s' },
-    images: [{ url: '/placeholder-accessory.svg', alt: 'Samsung 980 500GB NVMe SSD' }],
+    images: [
+      {
+            'url': 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Samsung 980 500GB PCIe 3.0 M.2 NVMe SSD'
+      },
+      {
+            'url': 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'High Speed NVMe PCIe Solid State Drive'
+      }
+],
   },
   {
     id: 'prod-ssd-2',
@@ -460,7 +541,16 @@ export const INITIAL_PRODUCTS: CatalogProduct[] = [
     shortDescription: 'Massive 1TB capacity running on PCIe 4.0 x4 delivering up to 3,500 MB/s read speeds.',
     description: 'Kingston NV2 1TB is a high-capacity storage solution designed for thinner notebooks and systems with limited space.',
     specifications: { capacity: '1TB', interface: 'PCIe 4.0 x4 NVMe', formFactor: 'M.2 2280', readSpeed: '3,500 MB/s', writeSpeed: '2,100 MB/s' },
-    images: [{ url: '/placeholder-accessory.svg', alt: 'Kingston NV2 1TB NVMe SSD' }],
+    images: [
+      {
+            'url': 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Kingston NV2 1TB PCIe 4.0 NVMe M.2 SSD'
+      },
+      {
+            'url': 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Kingston NV2 Fast Storage SSD'
+      }
+],
   },
   {
     id: 'prod-ssd-3',
@@ -479,7 +569,16 @@ export const INITIAL_PRODUCTS: CatalogProduct[] = [
     shortDescription: 'Revitalize older laptops with 2.5-inch SATA bays. 300% faster than traditional mechanical hard drives.',
     description: 'Crucial BX500 SATA SSD with 540 MB/s sequential reads. Ideal for upgrading older Core i3/i5/i7 laptops.',
     specifications: { capacity: '480GB', interface: 'SATA 6.0Gb/s', formFactor: '2.5-inch 7mm', readSpeed: '540 MB/s', writeSpeed: '500 MB/s' },
-    images: [{ url: '/placeholder-accessory.svg', alt: 'Crucial BX500 480GB SATA SSD' }],
+    images: [
+      {
+            'url': 'https://images.unsplash.com/photo-1544652478-6653e09f18a2?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Crucial BX500 480GB 2.5-inch Internal SATA III SSD'
+      },
+      {
+            'url': 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Crucial 2.5 inch SATA SSD'
+      }
+],
   },
 
   // ─── CHARGER PRODUCTS ───
@@ -500,7 +599,16 @@ export const INITIAL_PRODUCTS: CatalogProduct[] = [
     shortDescription: 'Genuine OEM HP 19.5V 3.33A 65W power adapter with 4.5mm blue tip connector.',
     description: 'Compatible with HP EliteBook 840, ProBook 450, Pavilion, and Envy series. Built-in surge and short-circuit protection.',
     specifications: { connectorType: '4.5mm Blue Pin', wattage: '65W', voltage: '19.5V 3.33A' },
-    images: [{ url: '/placeholder-accessory.svg', alt: 'HP 65W Blue Pin Charger' }],
+    images: [
+      {
+            'url': 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'HP 65W Blue Pin Smart Original Laptop Charger'
+      },
+      {
+            'url': 'https://images.unsplash.com/photo-1609081219090-a6d81d3085bf?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'HP Original Power Adapter & AC Cable'
+      }
+],
   },
   {
     id: 'prod-chg-2',
@@ -519,7 +627,16 @@ export const INITIAL_PRODUCTS: CatalogProduct[] = [
     shortDescription: 'Universal USB Power Delivery adapter for Dell Latitude, XPS, and USB-C notebooks.',
     description: 'Dell 65W Type-C AC Adapter with smart auto-switching voltage (5V/9V/15V/20V). Rubberized cable wrap included.',
     specifications: { connectorType: 'USB-C Type-C', wattage: '65W', compatibility: 'Dell Latitude, XPS, Inspiron, MacBook' },
-    images: [{ url: '/placeholder-accessory.svg', alt: 'Dell 65W USB-C Charger' }],
+    images: [
+      {
+            'url': 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Dell 65W USB-C Type-C Fast AC Power Adapter'
+      },
+      {
+            'url': 'https://images.unsplash.com/photo-1585338107529-13afc5f02586?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Dell USB-C Fast Charger Cable'
+      }
+],
   },
   {
     id: 'prod-chg-3',
@@ -538,7 +655,16 @@ export const INITIAL_PRODUCTS: CatalogProduct[] = [
     shortDescription: 'Lenovo OEM 65W Type-C adapter compatible with ThinkPad T14, X1 Carbon, Yoga, and IdeaPad.',
     description: 'Fast charging supported. Lightweight and durable for travel.',
     specifications: { connectorType: 'USB-C Type-C', wattage: '65W' },
-    images: [{ url: '/placeholder-accessory.svg', alt: 'Lenovo 65W USB-C Charger' }],
+    images: [
+      {
+            'url': 'https://images.unsplash.com/photo-1585338107529-13afc5f02586?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Lenovo 65W Standard USB-C AC Wall Adapter'
+      },
+      {
+            'url': 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Lenovo Type-C Wall Charger'
+      }
+],
   },
 
   // ─── MICE & PERIPHERALS ───
@@ -559,7 +685,16 @@ export const INITIAL_PRODUCTS: CatalogProduct[] = [
     shortDescription: 'Reliable 10-meter wireless range, plug-and-play USB nano receiver, 12-month battery life.',
     description: 'Logitech M170 wireless mouse offers dependable wireless connectivity with optical tracking and ambidextrous shape.',
     specifications: { connectionType: '2.4GHz Wireless USB Nano', dpi: '1000 DPI', buttons: '3 Buttons' },
-    images: [{ url: '/placeholder-accessory.svg', alt: 'Logitech M170 Wireless Mouse' }],
+    images: [
+      {
+            'url': 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Logitech M170 Compact Wireless Mouse'
+      },
+      {
+            'url': 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Ergonomic Optical Wireless Mouse'
+      }
+],
   },
   {
     id: 'prod-mou-2',
@@ -578,7 +713,16 @@ export const INITIAL_PRODUCTS: CatalogProduct[] = [
     shortDescription: 'Simple, reliable USB wired optical mouse for everyday office and laptop workstation tasks.',
     description: 'Dell Optical Mouse MS116 features optical LED tracking and wired connectivity for comfortable daily performance.',
     specifications: { connectionType: 'USB Wired', dpi: '1000 DPI', buttons: '3 Buttons' },
-    images: [{ url: '/placeholder-accessory.svg', alt: 'Dell MS116 Optical Mouse' }],
+    images: [
+      {
+            'url': 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Dell MS116 Wired Optical USB Mouse'
+      },
+      {
+            'url': 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Dell USB Wired Mouse Profile'
+      }
+],
   },
 
   // ─── LAPTOP BAGS ───
@@ -599,7 +743,16 @@ export const INITIAL_PRODUCTS: CatalogProduct[] = [
     shortDescription: 'Padded laptop compartment holding up to 15.6-inch laptops with organizer pockets and reinforced straps.',
     description: 'Water-resistant exterior fabric keeps hardware safe during daily commutes across Pakistani weather conditions.',
     specifications: { size: '15.6 Inch', material: 'Water-Resistant Polyester', type: 'Backpack' },
-    images: [{ url: '/placeholder-accessory.svg', alt: 'HP 15.6 Classic Backpack' }],
+    images: [
+      {
+            'url': 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'HP 15.6 Classic Water-Resistant Laptop Backpack'
+      },
+      {
+            'url': 'https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Protective Laptop Compartment Backpack'
+      }
+],
   },
   {
     id: 'prod-bag-2',
@@ -618,7 +771,16 @@ export const INITIAL_PRODUCTS: CatalogProduct[] = [
     shortDescription: 'Dedicated padded laptop cradle with quick-access front accessory pocket and breathable air-mesh back panel.',
     description: 'Targus Intellect Backpack delivers essential laptop protection in a sleek, compact side-loading compartment.',
     specifications: { size: '15.6 Inch', material: 'Durable Polyester', type: 'Slim Backpack' },
-    images: [{ url: '/placeholder-accessory.svg', alt: 'Targus 15.6 Intellect Backpack' }],
+    images: [
+      {
+            'url': 'https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Targus 15.6 Intellect Slim Lightweight Laptop Backpack'
+      },
+      {
+            'url': 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Targus Sleek Urban Backpack'
+      }
+],
   },
 
   // ─── COOLING PADS ───
@@ -639,7 +801,16 @@ export const INITIAL_PRODUCTS: CatalogProduct[] = [
     shortDescription: '140mm silent intake fan with metal mesh surface, USB pass-through connector, and 7-degree ergonomic incline.',
     description: 'Deepcool Wind Pal Mini delivers steady airflow to keep laptop CPU/GPU temperatures 10-15C cooler under load.',
     specifications: { fans: '1x 140mm LED Fan', fanSpeed: '1000 RPM', compatibility: 'Up to 15.6" Laptops', usbPorts: 'USB Pass-through' },
-    images: [{ url: '/placeholder-accessory.svg', alt: 'Deepcool Wind Pal Mini' }],
+    images: [
+      {
+            'url': 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Deepcool Wind Pal Mini Silent Laptop Cooler'
+      },
+      {
+            'url': 'https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Laptop Cooling Stand Fan System'
+      }
+],
   },
   {
     id: 'prod-col-2',
@@ -658,6 +829,15 @@ export const INITIAL_PRODUCTS: CatalogProduct[] = [
     shortDescription: 'Triple 110mm ultra-quiet cooling fans with dual adjustable height settings and dual USB hub.',
     description: 'Ultra-portable and slim cooling pad supporting laptops up to 17 inches. Wear-resistant metal mesh surface.',
     specifications: { fans: '3x 110mm High-Speed Fans', fanSpeed: '1100 RPM', compatibility: '15.6" to 17" Laptops', usbPorts: '2x USB 2.0' },
-    images: [{ url: '/placeholder-accessory.svg', alt: 'HAVIT HV-F2056 Cooling Pad' }],
+    images: [
+      {
+            'url': 'https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'HAVIT HV-F2056 Ultra-Slim 3-Fan Laptop Cooling Pad'
+      },
+      {
+            'url': 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=1000&q=80',
+            'alt': 'Multi Fan LED Laptop Cooling Stand'
+      }
+],
   },
 ];
