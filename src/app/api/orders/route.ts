@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
       const orderItemsToCreate = [];
 
       for (const item of items) {
-        const product = await tx.product.findUnique({
+        let product = await tx.product.findUnique({
           where: { id: item.productId },
           include: {
             variants: true,
@@ -56,6 +56,18 @@ export async function POST(req: NextRequest) {
             },
           },
         });
+
+        if (!product) {
+          product = await tx.product.findUnique({
+            where: { slug: item.productId },
+            include: {
+              variants: true,
+              discounts: {
+                where: { isActive: true },
+              },
+            },
+          });
+        }
 
         if (!product || product.status !== 'PUBLISHED') {
           throw new Error(`Product "${item.productId}" is currently unavailable or removed.`);

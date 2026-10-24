@@ -9,7 +9,7 @@ import AdminOrderDetailClient from '@/components/admin/AdminOrderDetailClient';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminOrderDetailPage({ params }: { params: { id: string } }) {
-  const order = await prisma.order.findUnique({
+  let order = await prisma.order.findUnique({
     where: { id: params.id },
     include: {
       items: {
@@ -27,6 +27,27 @@ export default async function AdminOrderDetailPage({ params }: { params: { id: s
       },
     },
   });
+
+  if (!order) {
+    order = await prisma.order.findUnique({
+      where: { orderNumber: params.id },
+      include: {
+        items: {
+          include: {
+            product: {
+              select: {
+                id: true,
+                title: true,
+                slug: true,
+                brand: { select: { name: true } },
+                images: { take: 1, select: { url: true } },
+              },
+            },
+          },
+        },
+      },
+    });
+  }
 
   if (!order) {
     notFound();
@@ -62,8 +83,8 @@ export default async function AdminOrderDetailPage({ params }: { params: { id: s
             </div>
             <p className="text-xs text-slate-400 mt-0.5">
               Placed on{' '}
-              {new Date(order.createdAt).toLocaleDateString('en-PK', {
-                dateStyle: 'full',
+              {new Date(order.createdAt).toLocaleString('en-PK', {
+                dateStyle: 'medium',
                 timeStyle: 'short',
               })}
             </p>
@@ -71,7 +92,7 @@ export default async function AdminOrderDetailPage({ params }: { params: { id: s
         </div>
 
         <a
-          href={`https://wa.me/${order.customerPhone.replace(/[^0-9]/g, '')}`}
+          href={`https://wa.me/${(order.customerPhone || '').replace(/[^0-9]/g, '')}`}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#25D366] text-white text-xs font-bold hover:brightness-110 shadow-md"
@@ -93,7 +114,7 @@ export default async function AdminOrderDetailPage({ params }: { params: { id: s
             <div className="space-y-4 divide-y divide-brand-steel/50">
               {order.items.map((item) => {
                 const config = (item.selectedConfig || {}) as Record<string, any>;
-                const mainImg = item.product?.images[0]?.url || '/placeholder-laptop.svg';
+                const mainImg = item.product?.images?.[0]?.url || '/placeholder-laptop.svg';
 
                 return (
                   <div key={item.id} className="pt-4 first:pt-0 flex flex-col sm:flex-row gap-4">

@@ -10,6 +10,7 @@ import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Textarea from '@/components/ui/Textarea';
+import { generateWhatsAppLink, OrderData } from '@/lib/whatsapp';
 import toast from 'react-hot-toast';
 
 export default function CheckoutPage() {
@@ -76,17 +77,12 @@ export default function CheckoutPage() {
         customerPhone: customerPhone.trim(),
         customerCity,
         customerAddress: customerAddress.trim(),
-        notes: deliveryNotes.trim() || undefined,
+        deliveryNotes: deliveryNotes.trim() || undefined,
         items: items.map((i) => ({
           productId: i.productId,
-          title: i.title,
-          unitPrice: i.unitPrice,
           quantity: i.quantity,
-          configSummary: i.configSummary,
+          config: i.config || {},
         })),
-        deliveryCharge,
-        discount: 0,
-        totalAmount,
       };
 
       const res = await fetch('/api/orders', {
@@ -96,14 +92,49 @@ export default function CheckoutPage() {
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || 'Failed to place order');
+        const errorData = await res.json().catch(() => ({}));
+        let errMsg = 'Failed to place order';
+        if (typeof errorData.error === 'string') {
+          errMsg = errorData.error;
+        } else if (errorData.error && typeof errorData.error === 'object') {
+          errMsg = JSON.stringify(errorData.error);
+        }
+        throw new Error(errMsg);
       }
 
       const data = await res.json();
-      toast.success('Order placed successfully! Redirecting...');
+      const confirmedOrder = data.order;
+
+      // Construct WhatsApp order message with full item specs, totals, and delivery info
+      const orderData: OrderData = {
+        orderNumber: confirmedOrder.orderNumber,
+        items: items.map((i) => ({
+          productTitle: i.title,
+          brand: i.brand,
+          config: (i.config || {}) as any,
+          quantity: i.quantity,
+          unitPrice: i.unitPrice,
+          lineTotal: i.unitPrice * i.quantity,
+        })),
+        subtotal,
+        deliveryCharge,
+        discount: 0,
+        totalAmount,
+        customerName: customerName.trim(),
+        customerPhone: customerPhone.trim(),
+        customerCity,
+        customerAddress: customerAddress.trim(),
+        deliveryNotes: deliveryNotes.trim() || undefined,
+      };
+
+      const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '923134951239';
+      const whatsappUrl = generateWhatsAppLink(orderData, whatsappNumber);
+
       clearCart();
-      router.push(`/order/${data.order.orderNumber}`);
+      toast.success('Order placed! Opening WhatsApp to send your order details...');
+
+      // Redirect immediately to WhatsApp with pre-filled order message so customer just taps "Send"
+      window.location.href = whatsappUrl;
     } catch (err: any) {
       console.error(err);
       toast.error(err.message || 'Something went wrong while placing your order.');

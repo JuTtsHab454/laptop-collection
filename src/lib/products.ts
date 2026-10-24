@@ -4,6 +4,7 @@ import { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_BRANDS } from '@/data/cat
 
 export interface ProductSearchParams {
   category?: string;
+  excludeCategory?: string;
   brand?: string;
   minPrice?: string;
   maxPrice?: string;
@@ -25,6 +26,8 @@ export async function getFilteredProducts(params: ProductSearchParams) {
 
   if (params.category) {
     where.category = { slug: params.category };
+  } else if (params.excludeCategory) {
+    where.category = { slug: { not: params.excludeCategory } };
   }
 
   if (params.brand) {
@@ -135,6 +138,12 @@ export async function getFilteredProducts(params: ProductSearchParams) {
         if ((catSlug === 'bags' || catSlug === 'accessories/bags') && pCat === 'laptop-bags') return true;
         if ((catSlug === 'cooling-pads' || catSlug === 'accessories/cooling-pads') && pCat === 'cooling-pads') return true;
         return false;
+      });
+    } else if (params.excludeCategory) {
+      const excl = params.excludeCategory.toLowerCase();
+      fallbackList = fallbackList.filter((p) => {
+        const pCat = p.category?.slug?.toLowerCase();
+        return pCat !== excl;
       });
     }
 

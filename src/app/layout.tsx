@@ -39,7 +39,7 @@ export const metadata: Metadata = {
       'Shop premium new laptops, RAM, SSDs, and accessories with delivery across Pakistan.',
     images: [{ url: '/icon.svg', width: 1200, height: 630 }],
   },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://laptop-collection-bay.vercel.app'),
 };
 
 export default function RootLayout({

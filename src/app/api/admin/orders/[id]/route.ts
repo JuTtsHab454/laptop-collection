@@ -6,7 +6,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const order = await prisma.order.findUnique({
+    let order = await prisma.order.findUnique({
       where: { id: params.id },
       include: {
         items: {
@@ -23,6 +23,26 @@ export async function GET(
         },
       },
     });
+
+    if (!order) {
+      order = await prisma.order.findUnique({
+        where: { orderNumber: params.id },
+        include: {
+          items: {
+            include: {
+              product: {
+                select: {
+                  title: true,
+                  slug: true,
+                  brand: { select: { name: true } },
+                  images: { take: 1, select: { url: true } },
+                },
+              },
+            },
+          },
+        },
+      });
+    }
 
     if (!order) {
       return NextResponse.json({ error: 'Order not found' }, { status: 404 });
@@ -43,8 +63,17 @@ export async function PATCH(
     const body = await req.json();
     const { status, paymentVerified, paymentNote, adminNotes } = body;
 
+    let existing = await prisma.order.findUnique({ where: { id: params.id } });
+    if (!existing) {
+      existing = await prisma.order.findUnique({ where: { orderNumber: params.id } });
+    }
+
+    if (!existing) {
+      return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+    }
+
     const updated = await prisma.order.update({
-      where: { id: params.id },
+      where: { id: existing.id },
       data: {
         ...(status && { status }),
         ...(paymentVerified !== undefined && { paymentVerified: !!paymentVerified }),

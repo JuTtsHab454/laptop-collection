@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import Header from './Header';
 import Footer from './Footer';
 import FloatingContact from './FloatingContact';
+import AnnouncementBar from '../home/AnnouncementBar';
 
 export const StorefrontShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
@@ -19,6 +20,7 @@ export const StorefrontShell: React.FC<{ children: React.ReactNode }> = ({ child
 
   return (
     <div className="flex flex-col min-h-screen bg-brand-dark text-slate-100 selection:bg-accent-gold selection:text-brand-dark">
+      <AnnouncementBar />
       <Header />
       <main className="flex-1 pb-16">{children}</main>
       <Footer />

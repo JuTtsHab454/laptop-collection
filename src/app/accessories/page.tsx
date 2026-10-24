@@ -16,7 +16,11 @@ export default async function AccessoriesPage({
 }: {
   searchParams: Record<string, string>;
 }) {
-  const data = await getFilteredProducts(searchParams);
+  const queryParams = {
+    ...searchParams,
+    ...(!searchParams.category ? { excludeCategory: 'laptops' } : {}),
+  };
+  const data = await getFilteredProducts(queryParams);
 
   return (
     <ProductListingLayout

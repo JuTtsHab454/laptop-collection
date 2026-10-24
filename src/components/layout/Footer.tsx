@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Phone, MapPin, MessageCircle, ShieldCheck, Truck, Headphones, Sparkles } from 'lucide-react';
+import { Phone, MapPin, MessageCircle, Sparkles } from 'lucide-react';
 import Logo from '@/components/ui/Logo';
 
 export const Footer: React.FC = () => {
@@ -9,53 +9,6 @@ export const Footer: React.FC = () => {
 
   return (
     <footer className="bg-[#07090E] text-white border-t border-amber-500/20 w-full overflow-hidden">
-      {/* Trust banner */}
-      <div className="border-b border-white/[0.08] bg-[#0A0D15]/90 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-7">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="p-2 sm:p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex-shrink-0">
-                <Truck className="w-5 h-5 sm:w-6 sm:h-6" />
-              </div>
-              <div className="min-w-0">
-                <h4 className="text-xs sm:text-sm font-bold text-white truncate">Nationwide Delivery</h4>
-                <p className="text-[11px] text-slate-400 truncate">Safely delivered across Pakistan</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="p-2 sm:p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex-shrink-0">
-                <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6" />
-              </div>
-              <div className="min-w-0">
-                <h4 className="text-xs sm:text-sm font-bold text-white truncate">Verified Specs</h4>
-                <p className="text-[11px] text-slate-400 truncate">100% genuine hardware checks</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="p-2 sm:p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex-shrink-0">
-                <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6" />
-              </div>
-              <div className="min-w-0">
-                <h4 className="text-xs sm:text-sm font-bold text-white truncate">WhatsApp Orders</h4>
-                <p className="text-[11px] text-slate-400 truncate">Instant confirmation &amp; updates</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="p-2 sm:p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex-shrink-0">
-                <Headphones className="w-5 h-5 sm:w-6 sm:h-6" />
-              </div>
-              <div className="min-w-0">
-                <h4 className="text-xs sm:text-sm font-bold text-white truncate">Expert Advice</h4>
-                <p className="text-[11px] text-slate-400 truncate">Guidance for every budget</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Main Footer Links */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-12 gap-8 lg:gap-8">

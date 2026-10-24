@@ -78,8 +78,7 @@ export const ProductCard: React.FC<{ product: ProductCardData }> = ({ product })
       maxStock: product.stock,
     });
 
-    toast.success(`${product.title} added to Cart! Opening checkout...`);
-    window.location.href = '/cart';
+    toast.success(`${product.title} added to Cart! 🛒`);
   };
 
   return (
@@ -163,18 +162,20 @@ export const ProductCard: React.FC<{ product: ProductCardData }> = ({ product })
           </h3>
         </Link>
 
-        {/* Rating Stars */}
-        <div className="flex items-center gap-1.5 text-xs mb-2.5">
-          <div className="flex items-center text-amber-400 drop-shadow-[0_0_6px_rgba(245,158,11,0.5)]">
-            <Star className="w-3.5 h-3.5 fill-current" />
+        {/* Rating Stars (Show only when real reviews exist) */}
+        {Boolean(product.reviewCount && product.reviewCount > 0) && (
+          <div className="flex items-center gap-1.5 text-xs mb-2.5">
+            <div className="flex items-center text-amber-400 drop-shadow-[0_0_6px_rgba(245,158,11,0.5)]">
+              <Star className="w-3.5 h-3.5 fill-current" />
+            </div>
+            <span className="font-extrabold text-slate-200 text-xs">
+              {product.rating?.toFixed(1)}
+            </span>
+            <span className="text-[11px] text-slate-400">
+              ({product.reviewCount} {product.reviewCount === 1 ? 'review' : 'reviews'})
+            </span>
           </div>
-          <span className="font-extrabold text-slate-200 text-xs">
-            {product.rating ? product.rating.toFixed(1) : '5.0'}
-          </span>
-          <span className="text-[11px] text-slate-400">
-            ({product.reviewCount ?? 8} reviews)
-          </span>
-        </div>
+        )}
 
         {/* High-Tech Spec Pills for Laptops */}
         {isLaptop && (cpu || ram || ssd) && (
